@@ -96,7 +96,7 @@ export default function BookPage() {
                   <ol className="space-y-5">
                     {nextSteps.map((step, i) => (
                       <li key={step.title} className="flex gap-4">
-                        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ivory text-xs font-bold text-accent">
+                        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ivory text-xs font-bold text-accent-text">
                           {i + 1}
                         </span>
                         <div>

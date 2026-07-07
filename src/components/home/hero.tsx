@@ -112,7 +112,7 @@ export function Hero() {
         >
           <motion.p
             variants={item}
-            className="text-xs font-semibold uppercase tracking-[0.22em] text-accent-soft"
+            className="inline-flex rounded-full bg-charcoal/90 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-accent-soft backdrop-blur-sm"
           >
             Melbourne real estate photography
           </motion.p>

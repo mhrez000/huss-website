@@ -18,12 +18,12 @@ export function FinalCta() {
         sizes="100vw"
         className="object-cover"
       />
-      <div className="absolute inset-0 bg-charcoal/75" aria-hidden />
+      <div className="absolute inset-0 bg-charcoal/85" aria-hidden />
 
       <Container className="relative">
         <div className="mx-auto max-w-3xl text-center">
           <Reveal>
-            <p className="eyebrow mb-5 !text-accent-soft">Book in two minutes</p>
+            <p className="eyebrow mb-5 !text-cream/90">Book in two minutes</p>
             <h2 className="display text-balance text-4xl text-cream sm:text-6xl">
               {finalCta.heading}
             </h2>

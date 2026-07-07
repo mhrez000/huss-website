@@ -47,7 +47,7 @@ function useMelbourneToday(): string {
 function GroupHeading({ step, title }: { step: string; title: string }) {
   return (
     <div className="mb-5 flex items-center gap-3">
-      <span className="grid size-7 shrink-0 place-items-center rounded-full bg-ivory text-xs font-bold text-accent">
+      <span className="grid size-7 shrink-0 place-items-center rounded-full bg-ivory text-xs font-bold text-accent-text">
         {step}
       </span>
       <h2 className="text-lg font-bold text-ink">{title}</h2>

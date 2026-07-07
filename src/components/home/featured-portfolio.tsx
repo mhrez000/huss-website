@@ -55,14 +55,14 @@ export function FeaturedPortfolio() {
                 />
                 {/* Hover overlay — category + location */}
                 <div
-                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-charcoal/85 via-charcoal/15 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-charcoal/95 via-charcoal/20 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                   aria-hidden
                 />
                 <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-3 p-5 opacity-0 transition-all duration-500 ease-[var(--ease-out-expo)] group-hover:translate-y-0 group-hover:opacity-100">
                   <p className="text-sm font-semibold text-cream">
                     {item.category}
                   </p>
-                  <p className="mt-0.5 text-xs tracking-wide text-accent-soft">
+                  <p className="mt-0.5 text-xs tracking-wide text-cream/70">
                     {item.location}
                   </p>
                 </figcaption>

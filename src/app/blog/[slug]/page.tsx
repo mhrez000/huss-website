@@ -226,7 +226,7 @@ export default async function BlogPostPage({
             </div>
             <Link
               href="/blog"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-accent transition-colors hover:text-ink"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-accent-text transition-colors hover:text-ink"
             >
               All articles
               <ArrowRight className="h-4 w-4" aria-hidden />

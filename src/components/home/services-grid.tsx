@@ -28,7 +28,7 @@ function ServiceCard({ service, feature }: { service: Service; feature: boolean 
         />
         {/* Legibility gradient */}
         <div
-          className="absolute inset-0 bg-gradient-to-t from-charcoal/85 via-charcoal/25 to-transparent"
+          className="absolute inset-0 bg-gradient-to-t from-charcoal/95 via-charcoal/30 to-transparent"
           aria-hidden
         />
 
@@ -44,7 +44,7 @@ function ServiceCard({ service, feature }: { service: Service; feature: boolean 
               {service.title}
             </h3>
             <p className="mt-1.5 line-clamp-1 text-sm text-white/70">{service.blurb}</p>
-            <p className="mt-3 text-sm font-semibold text-accent-soft">
+            <p className="mt-3 text-sm font-semibold text-white/90">
               From {aud(service.priceFrom)}
             </p>
           </div>

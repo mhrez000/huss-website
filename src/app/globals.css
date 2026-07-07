@@ -17,7 +17,7 @@
   --color-ink: #1d1d1f; /* primary text */
   --color-stone: #6e6e73; /* secondary text — Apple grey (AA on white/ivory) */
   --color-accent: #0071e3; /* Apple blue — fills & CTAs (white text passes AA) */
-  --color-accent-hover: #0077ed; /* blue hover */
+  --color-accent-hover: #0066cc; /* darker blue hover — keeps white text AA */
   --color-accent-soft: #2997ff; /* blue for dark backgrounds */
   --color-accent-text: #0066cc; /* link blue for small text on light bg */
   --color-label: #b64400; /* Apple orange — eyebrow / "NEW" labels (AA on white) */

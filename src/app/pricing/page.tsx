@@ -144,7 +144,7 @@ export default function PricingPage() {
                       <p className="text-sm font-semibold text-ink">{e.name}</p>
                       <p className="mt-0.5 text-xs text-stone">{e.unit}</p>
                     </div>
-                    <p className="font-semibold text-accent">{aud(e.price)}</p>
+                    <p className="font-semibold text-accent-text">{aud(e.price)}</p>
                   </div>
                 ))}
               </div>
