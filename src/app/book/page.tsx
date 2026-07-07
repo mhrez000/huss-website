@@ -22,14 +22,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Book a Shoot",
     description:
-      "Book professional real estate photography in Melbourne in under two minutes. 24-hour delivery, weather-safe rescheduling and instant confirmation.",
+      "Book professional real estate photography in Melbourne in under two minutes. 24-hour delivery, weather-safe rescheduling and an instant booking summary.",
     images: [IMG.luxuryExteriorDusk],
   },
 };
 
 const nextSteps = [
   {
-    title: "Instant confirmation",
+    title: "Instant booking summary",
     text: "Your request lands in our diary straight away and a summary email arrives in your inbox.",
   },
   {
@@ -76,7 +76,7 @@ export default function BookPage() {
             <span className="text-gold" aria-hidden>
               •
             </span>
-            <span>Instant confirmation</span>
+            <span>Instant booking summary</span>
           </p>
         </Reveal>
 

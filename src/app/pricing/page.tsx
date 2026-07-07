@@ -76,7 +76,7 @@ export default function PricingPage() {
                   )}
                 >
                   {p.popular && (
-                    <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-gold px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white">
+                    <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-gold px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-ink">
                       Most popular
                     </span>
                   )}
