@@ -20,13 +20,10 @@ export function Counter({
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
   const reduce = useReducedMotion();
-  const [display, setDisplay] = useState(reduce ? value : 0);
+  const [display, setDisplay] = useState(0);
 
   useEffect(() => {
-    if (!inView || reduce) {
-      if (reduce) setDisplay(value);
-      return;
-    }
+    if (!inView || reduce) return;
     let raf: number;
     const start = performance.now();
     const tick = (now: number) => {
@@ -40,9 +37,11 @@ export function Counter({
     return () => cancelAnimationFrame(raf);
   }, [inView, value, duration, reduce]);
 
+  const shown = reduce ? value : display;
+
   return (
     <span ref={ref} className={className}>
-      {display.toLocaleString("en-AU", {
+      {shown.toLocaleString("en-AU", {
         minimumFractionDigits: decimals,
         maximumFractionDigits: decimals,
       })}

@@ -22,10 +22,12 @@ export function SiteNav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close the mobile menu on route change
-  useEffect(() => {
+  // Close the mobile menu on route change (adjust-state-during-render pattern)
+  const [prevPath, setPrevPath] = useState(pathname);
+  if (prevPath !== pathname) {
+    setPrevPath(pathname);
     setOpen(false);
-  }, [pathname]);
+  }
 
   // Lock body scroll while the mobile menu is open
   useEffect(() => {
