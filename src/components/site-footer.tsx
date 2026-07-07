@@ -46,7 +46,7 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <p className="mb-5 text-sm font-bold uppercase tracking-widest text-cream/40">
+            <p className="mb-5 text-sm font-bold uppercase tracking-widest text-cream/60">
               Explore
             </p>
             <ul className="space-y-3">
@@ -66,7 +66,7 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <p className="mb-5 text-sm font-bold uppercase tracking-widest text-cream/40">
+            <p className="mb-5 text-sm font-bold uppercase tracking-widest text-cream/60">
               Services
             </p>
             <ul className="space-y-3">
@@ -84,7 +84,7 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <p className="mb-5 text-sm font-bold uppercase tracking-widest text-cream/40">
+            <p className="mb-5 text-sm font-bold uppercase tracking-widest text-cream/60">
               Contact
             </p>
             <ul className="space-y-4 text-sm text-cream/70">
@@ -111,7 +111,7 @@ export function SiteFooter() {
                 {site.serviceRegion}
               </li>
             </ul>
-            <div className="mt-6 space-y-1 text-xs text-cream/40">
+            <div className="mt-6 space-y-1 text-xs text-cream/60">
               {site.hours.map((h) => (
                 <p key={h.days}>
                   {h.days}: {h.hours}
@@ -121,8 +121,8 @@ export function SiteFooter() {
           </div>
         </div>
 
-        {/* Legal */}
-        <div className="flex flex-col items-start justify-between gap-3 border-t border-line-dark py-8 text-xs text-cream/40 sm:flex-row sm:items-center">
+        {/* Legal — extra bottom padding on <lg clears the fixed mobile Book bar */}
+        <div className="flex flex-col items-start justify-between gap-3 border-t border-line-dark pt-8 pb-28 text-xs text-cream/60 sm:flex-row sm:items-center lg:pb-8">
           <p>
             © {new Date().getFullYear()} {site.legalName}. All rights reserved.
           </p>

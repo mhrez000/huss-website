@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Check, Clock, MapPin, Receipt, ShieldCheck } from "lucide-react";
 import { extras, faqs, finalCta, IMG, packages } from "@/content/site";
 import { aud, cn } from "@/lib/utils";
-import { jsonLd, photographyServiceSchema } from "@/lib/schema";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/reveal";
@@ -50,11 +49,6 @@ const pricingFaqs = faqs.filter((f) => pricingFaqQuestions.includes(f.q));
 export default function PricingPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={jsonLd(photographyServiceSchema())}
-      />
-
       {/* ---------- Header + packages ---------- */}
       <section className="bg-cream pt-28 pb-24 sm:pt-36 sm:pb-32">
         <Container>

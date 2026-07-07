@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { contactSchema } from "@/lib/booking-schema";
 import { sendContactEmails } from "@/lib/email";
+import { site } from "@/content/site";
 
 export const runtime = "nodejs";
 
@@ -34,8 +35,29 @@ export async function POST(request: Request) {
     );
   }
 
-  // Email failure must not fail the enquiry — sendContactEmails never throws.
-  await sendContactEmails(parsed.data);
+  // Durable server-side record of every valid enquiry — logged BEFORE
+  // attempting email, so a delivery failure never loses the message.
+  console.log(
+    JSON.stringify({
+      event: "contact_enquiry",
+      receivedAt: new Date().toISOString(),
+      ...parsed.data,
+    })
+  );
 
-  return NextResponse.json({ ok: true });
+  // sendContactEmails never throws; it reports success/skip/failure.
+  const result = await sendContactEmails(parsed.data);
+
+  // skipped = no RESEND_API_KEY (local dev) — the enquiry is logged above.
+  if (result.sent || result.skipped) {
+    return NextResponse.json({ ok: true });
+  }
+
+  return NextResponse.json(
+    {
+      ok: false,
+      message: `We couldn't send your message just now — please call ${site.phoneDisplay} or email ${site.email}.`,
+    },
+    { status: 502 }
+  );
 }

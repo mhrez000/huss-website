@@ -119,6 +119,7 @@ export function Testimonials() {
             ref={trackRef}
             role="region"
             aria-label="Agent testimonials"
+            tabIndex={0}
             className="no-scrollbar -mx-5 mt-14 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-px-5 px-5 pb-2 sm:-mx-8 sm:scroll-px-8 sm:px-8 lg:-mx-12 lg:scroll-px-12 lg:px-12"
           >
             {testimonials.map((t) => (

@@ -38,11 +38,10 @@ export const metadata: Metadata = {
     description: site.description,
     images: [{ url: "/hero-poster.jpg", width: 1200, height: 630, alt: `${site.name} real estate photography` }],
   },
+  // Card type only — X falls back to each page's og:* for title/description/image,
+  // so subpages don't inherit the homepage card.
   twitter: {
     card: "summary_large_image",
-    title: `${site.name} — Real Estate Photography Melbourne`,
-    description: site.description,
-    images: ["/hero-poster.jpg"],
   },
   robots: { index: true, follow: true },
 };
@@ -59,6 +58,12 @@ export default function RootLayout({
   return (
     <html lang="en-AU" className={manrope.variable}>
       <body>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-ink focus:px-5 focus:py-3 focus:text-cream"
+        >
+          Skip to content
+        </a>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={jsonLd(localBusinessSchema())}

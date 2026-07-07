@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 
 export const inputStyles = cn(
   "h-12 w-full rounded-xl border border-line bg-surface px-4 text-ink",
-  "placeholder:text-stone/60 outline-none transition-all duration-300",
+  "placeholder:text-stone outline-none transition-all duration-300",
   "focus:border-gold focus:ring-2 focus:ring-gold/20"
 );
 
@@ -20,6 +20,25 @@ export const textareaStyles = cn(
   inputStyles,
   "h-auto min-h-32 resize-y py-3 leading-relaxed"
 );
+
+/** id of the error message rendered by <Field> for the control with this id. */
+export function fieldErrorId(id: string) {
+  return `${id}-error`;
+}
+
+/**
+ * Accessibility props linking a control to its <Field> error message.
+ * Spread onto the control alongside react-hook-form's register():
+ *   <input {...fieldAria("email", errors.email?.message, true)} {...register("email")} />
+ */
+export function fieldAria(id: string, error?: string, required?: boolean) {
+  return {
+    id,
+    "aria-describedby": error ? fieldErrorId(id) : undefined,
+    "aria-invalid": !!error,
+    "aria-required": required,
+  };
+}
 
 /** Label + control + inline error. Pass the control as children. */
 export function Field({
@@ -52,7 +71,11 @@ export function Field({
       </label>
       {children}
       {error && (
-        <p className="text-sm text-red-600" role="alert">
+        <p
+          id={htmlFor ? fieldErrorId(htmlFor) : undefined}
+          className="text-sm text-red-600"
+          role="alert"
+        >
           {error}
         </p>
       )}

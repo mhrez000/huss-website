@@ -12,6 +12,7 @@ import {
   Field,
   FormAlert,
   HoneypotField,
+  fieldAria,
   inputStyles,
   textareaStyles,
 } from "@/components/forms/field";
@@ -35,20 +36,25 @@ export function ContactForm() {
 
   async function onSubmit(values: ContactInput) {
     setState({ status: "idle" });
+    const fallbackMessage = `Something went wrong sending your message — your details are still here. Please try again, or call us on ${site.phoneDisplay}.`;
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       });
-      const data = (await res.json().catch(() => null)) as { ok?: boolean } | null;
-      if (!res.ok || !data?.ok) throw new Error("Request failed");
+      const data = (await res.json().catch(() => null)) as
+        | { ok?: boolean; message?: string }
+        | null;
+      if (!res.ok || !data?.ok) {
+        // e.g. 502 when email delivery failed — show the server's message
+        // (call/email fallback) and keep the form data intact.
+        setState({ status: "error", message: data?.message || fallbackMessage });
+        return;
+      }
       setState({ status: "success" });
     } catch {
-      setState({
-        status: "error",
-        message: `Something went wrong sending your message — your details are still here. Please try again, or call us on ${site.phoneDisplay}.`,
-      });
+      setState({ status: "error", message: fallbackMessage });
     }
   }
 
@@ -88,22 +94,22 @@ export function ContactForm() {
         <div className="grid gap-5 sm:grid-cols-2">
           <Field label="Your name" htmlFor="contact-name" required error={errors.name?.message}>
             <input
-              id="contact-name"
               type="text"
               autoComplete="name"
               placeholder="Full name"
               className={inputStyles}
+              {...fieldAria("contact-name", errors.name?.message, true)}
               {...register("name")}
             />
           </Field>
 
           <Field label="Phone" htmlFor="contact-phone" hint="(optional)" error={errors.phone?.message}>
             <input
-              id="contact-phone"
               type="tel"
               autoComplete="tel"
               placeholder="04xx xxx xxx"
               className={inputStyles}
+              {...fieldAria("contact-phone", errors.phone?.message)}
               {...register("phone")}
             />
           </Field>
@@ -111,21 +117,21 @@ export function ContactForm() {
 
         <Field label="Email" htmlFor="contact-email" required error={errors.email?.message}>
           <input
-            id="contact-email"
             type="email"
             autoComplete="email"
             placeholder="you@agency.com.au"
             className={inputStyles}
+            {...fieldAria("contact-email", errors.email?.message, true)}
             {...register("email")}
           />
         </Field>
 
         <Field label="Message" htmlFor="contact-message" required error={errors.message?.message}>
           <textarea
-            id="contact-message"
             rows={5}
             placeholder="Tell us about the property or campaign — address, timing, what you need…"
             className={textareaStyles}
+            {...fieldAria("contact-message", errors.message?.message, true)}
             {...register("message")}
           />
         </Field>

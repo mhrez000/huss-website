@@ -17,8 +17,13 @@ export function TrustedBy() {
         </p>
       </Container>
 
-      {/* Seamless wordmark marquee — duplicated list, pauses on hover */}
-      <div className="relative mt-8 overflow-hidden">
+      {/* Seamless wordmark marquee — duplicated list, pauses on hover or keyboard focus */}
+      <div
+        role="marquee"
+        tabIndex={0}
+        aria-label="Agencies that trust HussMedia"
+        className="group relative mt-8 overflow-hidden"
+      >
         <div
           className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-cream to-transparent sm:w-32"
           aria-hidden
@@ -27,7 +32,7 @@ export function TrustedBy() {
           className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-cream to-transparent sm:w-32"
           aria-hidden
         />
-        <div className="flex w-max animate-marquee hover:[animation-play-state:paused]">
+        <div className="flex w-max animate-marquee hover:[animation-play-state:paused] group-focus-within:[animation-play-state:paused]">
           {[...trustedBy, ...trustedBy].map((name, i) => (
             <span
               key={`${name}-${i}`}

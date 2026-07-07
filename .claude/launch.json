@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "hussmedia-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "D:\\huss's website", "run", "dev", "--", "-p", "4028"],
+      "port": 4028
+    }
+  ]
+}

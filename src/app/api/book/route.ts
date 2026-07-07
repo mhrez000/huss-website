@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { bookingSchema } from "@/lib/booking-schema";
 import { buildGoogleCalendarUrl, sendBookingEmails } from "@/lib/email";
+import { site } from "@/content/site";
 
 export const runtime = "nodejs";
 
@@ -34,10 +35,31 @@ export async function POST(request: Request) {
     );
   }
 
+  // Durable server-side record of every valid booking request — logged
+  // BEFORE attempting email, so a delivery failure never loses the booking.
+  console.log(
+    JSON.stringify({
+      event: "booking_request",
+      receivedAt: new Date().toISOString(),
+      ...parsed.data,
+    })
+  );
+
   const calendarUrl = buildGoogleCalendarUrl(parsed.data);
 
-  // Email failure must not fail the booking — sendBookingEmails never throws.
-  await sendBookingEmails(parsed.data);
+  // sendBookingEmails never throws; it reports success/skip/failure.
+  const result = await sendBookingEmails(parsed.data);
 
-  return NextResponse.json({ ok: true, calendarUrl });
+  // skipped = no RESEND_API_KEY (local dev) — the booking is logged above.
+  if (result.sent || result.skipped) {
+    return NextResponse.json({ ok: true, calendarUrl });
+  }
+
+  return NextResponse.json(
+    {
+      ok: false,
+      message: `We couldn't process your booking just now — please call ${site.phoneDisplay} or email ${site.email}.`,
+    },
+    { status: 502 }
+  );
 }

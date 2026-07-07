@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import Image from "next/image";
 import {
   motion,
   useReducedMotion,
@@ -8,7 +9,7 @@ import {
   useTransform,
   type Variants,
 } from "framer-motion";
-import { Clock, Star } from "lucide-react";
+import { Clock, Pause, Play, Star } from "lucide-react";
 import { hero, heroMedia, site } from "@/content/site";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,8 @@ const item: Variants = {
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [videoPaused, setVideoPaused] = useState(false);
   const reduce = useReducedMotion();
 
   // Subtle parallax: the video drifts slower than the scroll.
@@ -40,29 +43,64 @@ export function Hero() {
   });
   const videoY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
 
+  const toggleVideo = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused) {
+      void video.play();
+      setVideoPaused(false);
+    } else {
+      video.pause();
+      setVideoPaused(true);
+    }
+  };
+
   return (
     <section
       ref={sectionRef}
       className="relative flex min-h-svh items-center overflow-hidden bg-charcoal"
     >
-      {/* Background video with parallax drift */}
-      <motion.div
-        style={{ y: reduce ? "0%" : videoY }}
-        className="absolute inset-0 will-change-transform"
+      {/* Background — static poster under reduced motion (WCAG 2.2.2),
+          otherwise autoplaying video with parallax drift */}
+      {reduce ? (
+        <div className="absolute inset-0" aria-hidden>
+          <Image
+            src={heroMedia.poster}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+          {/* Legibility gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-charcoal/40 to-charcoal/25" />
+        </div>
+      ) : (
+        <motion.div
+          style={{ y: videoY }}
+          className="absolute inset-0 will-change-transform"
+          aria-hidden
+        >
+          <video
+            ref={videoRef}
+            src={heroMedia.video}
+            poster={heroMedia.poster}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          {/* Legibility gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-charcoal/40 to-charcoal/25" />
+        </motion.div>
+      )}
+
+      {/* Top-edge scrim so nav links stay legible over bright video frames */}
+      <div
+        className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-charcoal/60 to-transparent"
         aria-hidden
-      >
-        <video
-          src={heroMedia.video}
-          poster={heroMedia.poster}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        {/* Legibility gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-charcoal/40 to-charcoal/25" />
-      </motion.div>
+      />
 
       {/* Content */}
       <Container className="relative z-10 py-32 sm:py-36">
@@ -138,6 +176,22 @@ export function Hero() {
           />
         </span>
       </motion.div>
+
+      {/* Pause/play control for the background video (WCAG 2.2.2) */}
+      {!reduce && (
+        <button
+          type="button"
+          onClick={toggleVideo}
+          aria-label={videoPaused ? "Play background video" : "Pause background video"}
+          className="absolute bottom-7 right-5 z-20 grid size-11 place-items-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur transition-colors hover:bg-white/20 sm:right-8"
+        >
+          {videoPaused ? (
+            <Play className="size-4" aria-hidden />
+          ) : (
+            <Pause className="size-4" aria-hidden />
+          )}
+        </button>
+      )}
     </section>
   );
 }

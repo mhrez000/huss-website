@@ -14,7 +14,7 @@ const buttonVariants = cva(
       variant: {
         primary:
           "bg-ink text-cream hover:bg-charcoal hover:shadow-card-hover hover:-translate-y-0.5",
-        gold: "bg-gold text-white hover:bg-[#9c7c4b] hover:shadow-card-hover hover:-translate-y-0.5",
+        gold: "bg-gold text-ink hover:bg-gold-soft hover:shadow-card-hover hover:-translate-y-0.5",
         outline:
           "border border-line bg-transparent text-ink hover:border-ink hover:-translate-y-0.5",
         "outline-light":

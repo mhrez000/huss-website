@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { useLenis } from "lenis/react";
 import { ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react";
 import {
   portfolioCategories,
@@ -23,10 +24,12 @@ export function PortfolioGallery({ items }: { items: PortfolioItem[] }) {
   const [filter, setFilter] = useState<Filter>("All");
   const [active, setActive] = useState<number | null>(null);
   const reduce = useReducedMotion();
+  const lenis = useLenis();
 
   const tileRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
   const openedFromId = useRef<string | null>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   const filters = useMemo<Filter[]>(() => ["All", ...portfolioCategories], []);
 
@@ -84,21 +87,47 @@ export function PortfolioGallery({ items }: { items: PortfolioItem[] }) {
       } else if (e.key === "ArrowLeft") {
         e.preventDefault();
         prev();
+      } else if (e.key === "Tab") {
+        // Trap focus inside the dialog (close / prev / next buttons).
+        const dialog = dialogRef.current;
+        if (!dialog) return;
+        const focusables = Array.from(
+          dialog.querySelectorAll<HTMLElement>(
+            'button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])'
+          )
+        );
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (!first || !last) return;
+        const activeEl = document.activeElement;
+        const inDialog = activeEl instanceof HTMLElement && dialog.contains(activeEl);
+        if (e.shiftKey) {
+          if (!inDialog || activeEl === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else if (!inDialog || activeEl === last) {
+          e.preventDefault();
+          first.focus();
+        }
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [isOpen, closeLightbox, next, prev]);
 
-  // Lock body scroll while the lightbox is open.
+  // Lock body scroll while the lightbox is open (Lenis drives scrolling, so
+  // pause it too — the overflow toggle alone doesn't stop its wheel handling).
   useEffect(() => {
     if (!isOpen) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    lenis?.stop();
     return () => {
       document.body.style.overflow = previous;
+      lenis?.start();
     };
-  }, [isOpen]);
+  }, [isOpen, lenis]);
 
   // Move focus into the dialog on open.
   useEffect(() => {
@@ -132,7 +161,7 @@ export function PortfolioGallery({ items }: { items: PortfolioItem[] }) {
               <span
                 className={cn(
                   "text-xs tabular-nums",
-                  isActive ? "text-cream/60" : "text-stone/60"
+                  isActive ? "text-cream/60" : "text-stone"
                 )}
               >
                 {counts.get(f) ?? 0}
@@ -204,6 +233,7 @@ export function PortfolioGallery({ items }: { items: PortfolioItem[] }) {
       <AnimatePresence>
         {active !== null && current && (
           <motion.div
+            ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-label={`${current.alt} — image ${active + 1} of ${filtered.length}`}

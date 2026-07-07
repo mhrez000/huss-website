@@ -44,7 +44,7 @@ export function BeforeAfter() {
           {/* Tabs + active copy — left on desktop, below slider on mobile */}
           <Reveal className="order-2 lg:order-1 lg:col-span-4">
             <div
-              role="tablist"
+              role="group"
               aria-label="Editing examples"
               className="flex flex-wrap gap-2.5"
             >
@@ -54,10 +54,7 @@ export function BeforeAfter() {
                   <button
                     key={item.id}
                     type="button"
-                    role="tab"
-                    id={`ba-tab-${item.id}`}
-                    aria-selected={selected}
-                    aria-controls="ba-panel"
+                    aria-pressed={selected}
                     onClick={() => setActiveId(item.id)}
                     className={cn(
                       "h-11 rounded-full px-5 text-sm font-semibold transition-all duration-300",
@@ -72,12 +69,7 @@ export function BeforeAfter() {
               })}
             </div>
 
-            <div
-              id="ba-panel"
-              role="tabpanel"
-              aria-labelledby={`ba-tab-${active.id}`}
-              className="mt-8 min-h-28"
-            >
+            <div className="mt-8 min-h-28">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={active.id}
@@ -96,7 +88,7 @@ export function BeforeAfter() {
               </AnimatePresence>
             </div>
 
-            <p className="mt-8 text-xs text-stone/70">
+            <p className="mt-8 text-xs text-stone">
               Illustrative editing simulation — real before/after pairs coming
               soon.
             </p>
@@ -108,6 +100,7 @@ export function BeforeAfter() {
               ref={trackRef}
               className="group relative aspect-[16/10] cursor-ew-resize touch-pan-y overflow-hidden rounded-3xl shadow-[var(--shadow-card)] select-none"
               onPointerDown={(e) => {
+                if (e.button !== 0 || !e.isPrimary) return;
                 dragging.current = true;
                 e.currentTarget.setPointerCapture(e.pointerId);
                 updateFromClientX(e.clientX);
@@ -119,6 +112,9 @@ export function BeforeAfter() {
                 dragging.current = false;
               }}
               onPointerCancel={() => {
+                dragging.current = false;
+              }}
+              onLostPointerCapture={() => {
                 dragging.current = false;
               }}
             >

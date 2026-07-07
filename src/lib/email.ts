@@ -4,32 +4,76 @@ import type { BookingInput, ContactInput } from "@/lib/booking-schema";
 
 /* ===========================================================
    Email helpers — Resend when RESEND_API_KEY is set, console
-   fallback otherwise. Email failure must never fail a request:
-   every send is wrapped and returns { sent, error? }.
+   fallback otherwise. These helpers never throw; they return a
+   SendResult describing one of three outcomes:
+   - { sent: true }                  — admin notification delivered
+     (optionally with a `warning` if the customer copy failed)
+   - { sent: false, skipped: true }  — no RESEND_API_KEY (dev mode,
+     payload logged to the console instead)
+   - { sent: false, error }          — configured but delivery failed
    =========================================================== */
 
-export type SendResult = { sent: boolean; error?: string };
+export type SendResult =
+  | { sent: true; skipped?: never; error?: never; warning?: string }
+  | { sent: false; skipped: true; error?: never; warning?: never }
+  | { sent: false; skipped?: never; error: string; warning?: never };
 
 const FROM = () => process.env.EMAIL_FROM || "HussMedia <onboarding@resend.dev>";
 const ADMIN_TO = () => process.env.BOOKING_NOTIFY_EMAIL || site.email;
 
 /* ---------- calendar helpers ---------- */
 
-/** Start hour (24h, Melbourne local) for each booking time slot. */
+/** Start hour (24h, Melbourne local) for the fixed daytime slots. */
 const SLOT_START_HOUR: Record<string, number> = {
   "Morning (8am – 11am)": 8,
   "Midday (11am – 2pm)": 11,
   "Afternoon (2pm – 5pm)": 14,
-  "Twilight (dusk)": 18,
 };
 
-/** Floating local date-times (YYYYMMDDTHHMMSS) for a 2h shoot window. */
+const TWILIGHT_SLOT = "Twilight (dusk)";
+
+/**
+ * Approximate Melbourne dusk, in minutes from midnight, by month (1–12).
+ * Twilight shoots start 30 minutes before dusk and run 90 minutes; the
+ * exact time is confirmed with the agent closer to the date.
+ */
+const MELBOURNE_DUSK_MINUTES: Record<number, number> = {
+  1: 20 * 60 + 30, // Jan 8:30pm
+  2: 20 * 60, //      Feb 8:00pm
+  3: 19 * 60 + 15, // Mar 7:15pm
+  4: 17 * 60 + 45, // Apr 5:45pm
+  5: 17 * 60 + 15, // May 5:15pm
+  6: 17 * 60, //      Jun 5:00pm
+  7: 17 * 60 + 15, // Jul 5:15pm
+  8: 17 * 60 + 45, // Aug 5:45pm
+  9: 18 * 60 + 15, // Sep 6:15pm
+  10: 19 * 60 + 45, // Oct 7:45pm
+  11: 20 * 60 + 15, // Nov 8:15pm
+  12: 20 * 60 + 30, // Dec 8:30pm
+};
+
+/** Floating local date-times (YYYYMMDDTHHMMSS) for the shoot window. */
 function eventTimes(dateIso: string, timeSlot: string) {
-  const startHour = SLOT_START_HOUR[timeSlot] ?? 9;
   const day = dateIso.replace(/-/g, "");
-  const at = (h: number) => `${day}T${String(h).padStart(2, "0")}0000`;
-  return { start: at(startHour), end: at(startHour + 2) };
+  const at = (minutes: number) =>
+    `${day}T${String(Math.floor(minutes / 60)).padStart(2, "0")}${String(
+      minutes % 60
+    ).padStart(2, "0")}00`;
+
+  if (timeSlot === TWILIGHT_SLOT) {
+    const month = Number(dateIso.slice(5, 7));
+    const dusk = MELBOURNE_DUSK_MINUTES[month] ?? 18 * 60;
+    const start = dusk - 30;
+    return { start: at(start), end: at(start + 90), isTwilight: true };
+  }
+
+  const startHour = SLOT_START_HOUR[timeSlot] ?? 9;
+  return { start: at(startHour * 60), end: at((startHour + 2) * 60), isTwilight: false };
 }
+
+/** Extra description line for twilight bookings — dusk shifts with the season. */
+const TWILIGHT_NOTE =
+  "Twilight shoot — exact time confirmed closer to the date.";
 
 /** "2026-07-10" -> "Friday, 10 July 2026" (Melbourne). */
 function prettyDate(dateIso: string) {
@@ -44,11 +88,12 @@ function prettyDate(dateIso: string) {
 
 /** "Add to Google Calendar" link for a booking (Australia/Melbourne). */
 export function buildGoogleCalendarUrl(booking: BookingInput): string {
-  const { start, end } = eventTimes(booking.preferredDate, booking.preferredTime);
+  const { start, end, isTwilight } = eventTimes(booking.preferredDate, booking.preferredTime);
   const details = [
     `Real estate photography shoot with ${site.name}.`,
     `Services: ${booking.services.join(", ")}`,
     `Agent: ${booking.agentName}${booking.agency ? ` (${booking.agency})` : ""}`,
+    ...(isTwilight ? [TWILIGHT_NOTE] : []),
     `Questions? ${site.phoneDisplay} — ${site.email}`,
   ].join("\n");
 
@@ -74,7 +119,7 @@ function icsEscape(value: string) {
 
 /** Hand-built .ics invite for the booking (2h window, Melbourne). */
 export function buildBookingIcs(booking: BookingInput): string {
-  const { start, end } = eventTimes(booking.preferredDate, booking.preferredTime);
+  const { start, end, isTwilight } = eventTimes(booking.preferredDate, booking.preferredTime);
   const stamp = new Date()
     .toISOString()
     .replace(/[-:]/g, "")
@@ -84,6 +129,7 @@ export function buildBookingIcs(booking: BookingInput): string {
     `Real estate photography shoot with ${site.name}.`,
     `Services: ${booking.services.join(", ")}`,
     `Agent: ${booking.agentName}${booking.agency ? ` (${booking.agency})` : ""}`,
+    ...(isTwilight ? [TWILIGHT_NOTE] : []),
     `Questions? ${site.phoneDisplay} — ${site.email}`,
   ].join("\n");
 
@@ -262,9 +308,36 @@ function contactSummaryText(data: ContactInput) {
 
 /* ---------- senders ---------- */
 
+type SendAttempt = { ok: true } | { ok: false; message: string };
+
 /**
- * Booking emails: branded confirmation (with calendar link + .ics) to the
- * customer, plain summary to the studio. Never throws.
+ * One Resend send. resend@6 resolves { data, error } and does NOT throw on
+ * API failures, so the error object must be checked explicitly; the
+ * try/catch is only a last-resort guard against unexpected transport throws.
+ */
+async function attemptSend(
+  resend: Resend,
+  payload: Parameters<Resend["emails"]["send"]>[0],
+  label: string
+): Promise<SendAttempt> {
+  try {
+    const { error } = await resend.emails.send(payload);
+    if (error) {
+      console.error(`[email] ${label} failed:`, error.message);
+      return { ok: false, message: error.message };
+    }
+    return { ok: true };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown email error";
+    console.error(`[email] ${label} failed:`, message);
+    return { ok: false, message };
+  }
+}
+
+/**
+ * Booking emails: plain summary to the studio FIRST (the business-critical
+ * record), then a branded confirmation (with calendar link + .ics) to the
+ * customer. Never throws.
  */
 export async function sendBookingEmails(booking: BookingInput): Promise<SendResult> {
   const apiKey = process.env.RESEND_API_KEY;
@@ -278,16 +351,32 @@ export async function sendBookingEmails(booking: BookingInput): Promise<SendResu
         "────────────────────────────────────────────",
       ].join("\n")
     );
-    return { sent: false };
+    return { sent: false, skipped: true };
   }
 
-  try {
-    const resend = new Resend(apiKey);
-    const calendarUrl = buildGoogleCalendarUrl(booking);
-    const ics = buildBookingIcs(booking);
+  const resend = new Resend(apiKey);
+  const calendarUrl = buildGoogleCalendarUrl(booking);
+  const ics = buildBookingIcs(booking);
 
-    // Customer confirmation — branded, with calendar link + .ics attachment.
-    await resend.emails.send({
+  // Admin notification FIRST — this is the studio's record of the booking.
+  const admin = await attemptSend(
+    resend,
+    {
+      from: FROM(),
+      to: ADMIN_TO(),
+      replyTo: booking.email,
+      subject: `New booking: ${booking.propertyAddress} — ${booking.preferredDate}, ${booking.preferredTime}`,
+      text: bookingSummaryText(booking),
+    },
+    "booking admin notification"
+  );
+  if (!admin.ok) return { sent: false, error: admin.message };
+
+  // Customer confirmation second — the booking is already recorded, so a
+  // failure here degrades to a warning rather than failing the request.
+  const customer = await attemptSend(
+    resend,
+    {
       from: FROM(),
       to: booking.email,
       subject: `Booking request received — ${booking.propertyAddress}`,
@@ -298,28 +387,19 @@ export async function sendBookingEmails(booking: BookingInput): Promise<SendResu
           content: Buffer.from(ics).toString("base64"),
         },
       ],
-    });
-
-    // Admin notification — plain, functional, reply-to the agent.
-    await resend.emails.send({
-      from: FROM(),
-      to: ADMIN_TO(),
-      replyTo: booking.email,
-      subject: `New booking: ${booking.propertyAddress} — ${booking.preferredDate}, ${booking.preferredTime}`,
-      text: bookingSummaryText(booking),
-    });
-
-    return { sent: true };
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown email error";
-    console.error("[email] Failed to send booking emails:", message);
-    return { sent: false, error: message };
+    },
+    "booking customer confirmation"
+  );
+  if (!customer.ok) {
+    return { sent: true, warning: `Customer confirmation email failed: ${customer.message}` };
   }
+
+  return { sent: true };
 }
 
 /**
- * Contact emails: admin notification + short acknowledgement to the sender.
- * Never throws.
+ * Contact emails: admin notification FIRST (the business-critical record),
+ * then a short acknowledgement to the sender. Never throws.
  */
 export async function sendContactEmails(data: ContactInput): Promise<SendResult> {
   const apiKey = process.env.RESEND_API_KEY;
@@ -333,23 +413,29 @@ export async function sendContactEmails(data: ContactInput): Promise<SendResult>
         "────────────────────────────────────────────",
       ].join("\n")
     );
-    return { sent: false };
+    return { sent: false, skipped: true };
   }
 
-  try {
-    const resend = new Resend(apiKey);
+  const resend = new Resend(apiKey);
 
-    // Admin notification.
-    await resend.emails.send({
+  // Admin notification FIRST — this is the studio's record of the enquiry.
+  const admin = await attemptSend(
+    resend,
+    {
       from: FROM(),
       to: ADMIN_TO(),
       replyTo: data.email,
       subject: `New enquiry from ${data.name}`,
       text: contactSummaryText(data),
-    });
+    },
+    "contact admin notification"
+  );
+  if (!admin.ok) return { sent: false, error: admin.message };
 
-    // Short acknowledgement to the sender.
-    await resend.emails.send({
+  // Short acknowledgement to the sender — failure degrades to a warning.
+  const ack = await attemptSend(
+    resend,
+    {
       from: FROM(),
       to: data.email,
       subject: `We've received your message — ${site.name}`,
@@ -375,12 +461,12 @@ export async function sendContactEmails(data: ContactInput): Promise<SendResult>
     </table>
   </body>
 </html>`,
-    });
-
-    return { sent: true };
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown email error";
-    console.error("[email] Failed to send contact emails:", message);
-    return { sent: false, error: message };
+    },
+    "contact acknowledgement"
+  );
+  if (!ack.ok) {
+    return { sent: true, warning: `Acknowledgement email failed: ${ack.message}` };
   }
+
+  return { sent: true };
 }

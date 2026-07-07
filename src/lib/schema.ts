@@ -27,12 +27,8 @@ export function localBusinessSchema() {
       "@type": "City",
       name: "Melbourne",
     },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: site.googleRating,
-      reviewCount: site.googleReviewCount,
-      bestRating: 5,
-    },
+    // NOTE: aggregateRating intentionally omitted — only add it back with real,
+    // verifiable reviews (Google review-snippet guidelines forbid fabricated ratings).
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",

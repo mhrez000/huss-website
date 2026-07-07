@@ -13,9 +13,10 @@
   --color-charcoal: #191817; /* dark sections / footer */
   --color-coal: #211f1d; /* dark cards on charcoal */
   --color-ink: #23211e; /* primary text */
-  --color-stone: #837d74; /* muted grey text */
+  --color-stone: #6b655b; /* muted grey text (>=4.5:1 on cream/ivory/white) */
   --color-gold: #b08d57; /* warm gold accent */
   --color-gold-soft: #c8a97d; /* lighter gold for dark bg */
+  --color-gold-text: #82633a; /* darker gold for small text on light bg (~4.7:1 on cream) */
   --color-line: #e7e1d6; /* hairlines on light */
   --color-line-dark: #35322e; /* hairlines on dark */
 
@@ -86,7 +87,7 @@ body {
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-gold);
+  color: var(--color-gold-text);
 }
 
 .text-balance {

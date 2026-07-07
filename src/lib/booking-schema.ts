@@ -25,11 +25,13 @@ export function melbourneToday(): string {
 const asEnum = (values: string[], message: string) =>
   z.enum(values as [string, ...string[]], message);
 
-/** Honeypot — real users never see or fill this field. */
-const honeypot = z
-  .string()
-  .optional()
-  .refine((v) => !v, "Submission rejected");
+/**
+ * Honeypot — real users never see or fill this field. Deliberately NOT
+ * validated here: this schema also runs client-side via zodResolver, and a
+ * browser autofilling the hidden field would make submit silently no-op.
+ * The API routes enforce it instead (non-empty -> fake 200 success).
+ */
+const honeypot = z.string().optional();
 
 export const bookingSchema = z.object({
   propertyAddress: z

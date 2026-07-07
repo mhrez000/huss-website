@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +18,8 @@ import {
   FormAlert,
   HoneypotField,
   SelectShell,
+  fieldAria,
+  fieldErrorId,
   inputStyles,
   selectStyles,
   textareaStyles,
@@ -28,6 +30,18 @@ type SubmitState =
   | { status: "idle" }
   | { status: "error"; message: string }
   | { status: "success"; calendarUrl: string };
+
+const emptySubscribe = () => () => {};
+
+/**
+ * Melbourne-today (YYYY-MM-DD), computed on the CLIENT after hydration.
+ * The /book page is statically rendered, so baking the date in at build
+ * time goes stale; the server snapshot is "" (no min attribute) and the
+ * client snapshot is today. Server-side zod remains the real guard.
+ */
+function useMelbourneToday(): string {
+  return useSyncExternalStore(emptySubscribe, melbourneToday, () => "");
+}
 
 /** Numbered group heading inside the booking card. */
 function GroupHeading({ step, title }: { step: string; title: string }) {
@@ -43,7 +57,7 @@ function GroupHeading({ step, title }: { step: string; title: string }) {
 
 export function BookingForm() {
   const [state, setState] = useState<SubmitState>({ status: "idle" });
-  const today = melbourneToday();
+  const minDate = useMelbourneToday();
 
   const {
     register,
@@ -71,6 +85,7 @@ export function BookingForm() {
 
   async function onSubmit(values: BookingInput) {
     setState({ status: "idle" });
+    const fallbackMessage = `Something went wrong sending your booking — your details are still here. Please try again, or call us on ${site.phoneDisplay} and we'll organise it on the spot.`;
     try {
       const res = await fetch("/api/book", {
         method: "POST",
@@ -78,15 +93,17 @@ export function BookingForm() {
         body: JSON.stringify(values),
       });
       const data = (await res.json().catch(() => null)) as
-        | { ok?: boolean; calendarUrl?: string }
+        | { ok?: boolean; calendarUrl?: string; message?: string }
         | null;
-      if (!res.ok || !data?.ok) throw new Error("Request failed");
+      if (!res.ok || !data?.ok) {
+        // e.g. 502 when email delivery failed — show the server's message
+        // (call/email fallback) and keep the form data intact.
+        setState({ status: "error", message: data?.message || fallbackMessage });
+        return;
+      }
       setState({ status: "success", calendarUrl: data.calendarUrl ?? "" });
     } catch {
-      setState({
-        status: "error",
-        message: `Something went wrong sending your booking — your details are still here. Please try again, or call us on ${site.phoneDisplay} and we'll organise it on the spot.`,
-      });
+      setState({ status: "error", message: fallbackMessage });
     }
   }
 
@@ -154,11 +171,11 @@ export function BookingForm() {
               className="sm:col-span-2"
             >
               <input
-                id="propertyAddress"
                 type="text"
                 autoComplete="street-address"
                 placeholder="12 Example Street, Suburb VIC 3000"
                 className={inputStyles}
+                {...fieldAria("propertyAddress", errors.propertyAddress?.message, true)}
                 {...register("propertyAddress")}
               />
             </Field>
@@ -171,8 +188,8 @@ export function BookingForm() {
             >
               <SelectShell>
                 <select
-                  id="propertyType"
                   className={selectStyles}
+                  {...fieldAria("propertyType", errors.propertyType?.message, true)}
                   {...register("propertyType")}
                 >
                   <option value="" disabled>
@@ -195,8 +212,8 @@ export function BookingForm() {
             >
               <SelectShell>
                 <select
-                  id="propertySize"
                   className={selectStyles}
+                  {...fieldAria("propertySize", errors.propertySize?.message, true)}
                   {...register("propertySize")}
                 >
                   <option value="" disabled>
@@ -219,8 +236,8 @@ export function BookingForm() {
             >
               <SelectShell>
                 <select
-                  id="bedrooms"
                   className={selectStyles}
+                  {...fieldAria("bedrooms", errors.bedrooms?.message, true)}
                   {...register("bedrooms")}
                 >
                   <option value="" disabled>
@@ -243,8 +260,8 @@ export function BookingForm() {
             >
               <SelectShell>
                 <select
-                  id="bathrooms"
                   className={selectStyles}
+                  {...fieldAria("bathrooms", errors.bathrooms?.message, true)}
                   {...register("bathrooms")}
                 >
                   <option value="" disabled>
@@ -272,11 +289,11 @@ export function BookingForm() {
               error={errors.agentName?.message}
             >
               <input
-                id="agentName"
                 type="text"
                 autoComplete="name"
                 placeholder="Full name"
                 className={inputStyles}
+                {...fieldAria("agentName", errors.agentName?.message, true)}
                 {...register("agentName")}
               />
             </Field>
@@ -288,11 +305,11 @@ export function BookingForm() {
               error={errors.agency?.message}
             >
               <input
-                id="agency"
                 type="text"
                 autoComplete="organization"
                 placeholder="Your agency"
                 className={inputStyles}
+                {...fieldAria("agency", errors.agency?.message)}
                 {...register("agency")}
               />
             </Field>
@@ -304,11 +321,11 @@ export function BookingForm() {
               error={errors.email?.message}
             >
               <input
-                id="email"
                 type="email"
                 autoComplete="email"
                 placeholder="you@agency.com.au"
                 className={inputStyles}
+                {...fieldAria("email", errors.email?.message, true)}
                 {...register("email")}
               />
             </Field>
@@ -320,11 +337,11 @@ export function BookingForm() {
               error={errors.phone?.message}
             >
               <input
-                id="phone"
                 type="tel"
                 autoComplete="tel"
                 placeholder="04xx xxx xxx"
                 className={inputStyles}
+                {...fieldAria("phone", errors.phone?.message, true)}
                 {...register("phone")}
               />
             </Field>
@@ -342,10 +359,10 @@ export function BookingForm() {
               error={errors.preferredDate?.message}
             >
               <input
-                id="preferredDate"
                 type="date"
-                min={today}
+                min={minDate || undefined}
                 className={inputStyles}
+                {...fieldAria("preferredDate", errors.preferredDate?.message, true)}
                 {...register("preferredDate")}
               />
             </Field>
@@ -358,8 +375,8 @@ export function BookingForm() {
             >
               <SelectShell>
                 <select
-                  id="preferredTime"
                   className={selectStyles}
+                  {...fieldAria("preferredTime", errors.preferredTime?.message, true)}
                   {...register("preferredTime")}
                 >
                   <option value="" disabled>
@@ -378,7 +395,10 @@ export function BookingForm() {
 
         {/* 4 — Services */}
         <section className="border-t border-line pt-8">
-          <fieldset>
+          <fieldset
+            aria-describedby={errors.services ? fieldErrorId("services") : undefined}
+            aria-invalid={!!errors.services}
+          >
             <legend className="w-full">
               <GroupHeading step="4" title="Services" />
             </legend>
@@ -395,7 +415,7 @@ export function BookingForm() {
                     className={cn(
                       "inline-flex min-h-11 items-center justify-center rounded-full border border-line bg-surface px-5 py-2.5",
                       "text-sm font-semibold text-ink transition-all duration-300 hover:border-gold/60",
-                      "peer-checked:border-gold peer-checked:bg-gold peer-checked:text-white",
+                      "peer-checked:border-gold peer-checked:bg-gold peer-checked:text-ink",
                       "peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-gold"
                     )}
                   >
@@ -405,7 +425,11 @@ export function BookingForm() {
               ))}
             </div>
             {errors.services?.message && (
-              <p className="mt-3 text-sm text-red-600" role="alert">
+              <p
+                id={fieldErrorId("services")}
+                className="mt-3 text-sm text-red-600"
+                role="alert"
+              >
                 {errors.services.message}
               </p>
             )}
@@ -422,10 +446,10 @@ export function BookingForm() {
             error={errors.notes?.message}
           >
             <textarea
-              id="notes"
               rows={4}
               placeholder="Access details, must-have angles, tenant arrangements, campaign deadlines…"
               className={textareaStyles}
+              {...fieldAria("notes", errors.notes?.message)}
               {...register("notes")}
             />
           </Field>

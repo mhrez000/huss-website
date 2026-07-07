@@ -591,7 +591,7 @@ export const bookingProcess = {
   eyebrow: "Simple by design",
   heading: "From booking to inbox in 24 hours",
   steps: [
-    { num: "01", title: "Book online", text: "Pick a package, choose a time. Confirmation lands instantly — no phone tag." },
+    { num: "01", title: "Book online", text: "Pick a package, choose a time. Your booking summary lands instantly — we confirm your time within business hours." },
     { num: "02", title: "We photograph your property", text: "On time, every time. A calm, efficient shoot that works around vendors and tenants." },
     { num: "03", title: "We professionally edit", text: "Every frame hand-finished — skies, lawns, windows and colour, all perfected." },
     { num: "04", title: "Images within 24 hours", text: "A ready-to-publish gallery in your inbox the next morning. Guaranteed." },
@@ -701,7 +701,7 @@ export const faqs = [
   },
   {
     q: "How do I book?",
-    a: "Use the online booking form — it takes under two minutes and you'll receive instant confirmation. Prefer to talk? Call us and we'll organise everything on the spot.",
+    a: "Use the online booking form — it takes under two minutes, you'll receive an instant summary and we confirm your time within business hours. Prefer to talk? Call us and we'll organise everything on the spot.",
   },
   {
     q: "What payment methods do you accept?",
