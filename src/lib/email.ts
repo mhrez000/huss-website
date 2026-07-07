@@ -164,14 +164,14 @@ function escapeHtml(value: string) {
 }
 
 const COLOR = {
-  cream: "#faf8f4",
-  ivory: "#f3efe8",
-  charcoal: "#191817",
-  ink: "#23211e",
-  stone: "#837d74",
-  gold: "#b08d57",
-  goldSoft: "#c8a97d",
-  line: "#e7e1d6",
+  cream: "#ffffff",
+  ivory: "#f5f5f7",
+  charcoal: "#1d1d1f",
+  ink: "#1d1d1f",
+  stone: "#6e6e73",
+  accent: "#0071e3",
+  accentSoft: "#2997ff",
+  line: "#d2d2d7",
 };
 
 function summaryRow(label: string, value: string) {
@@ -202,7 +202,7 @@ function bookingCustomerHtml(booking: BookingInput, calendarUrl: string) {
       ([title, text], i) => `
       <tr>
         <td style="vertical-align:top;padding:10px 16px 10px 0;">
-          <div style="width:28px;height:28px;border-radius:50%;background:${COLOR.ivory};color:${COLOR.gold};font-size:12px;font-weight:700;text-align:center;line-height:28px;">${i + 1}</div>
+          <div style="width:28px;height:28px;border-radius:50%;background:${COLOR.ivory};color:${COLOR.accent};font-size:12px;font-weight:700;text-align:center;line-height:28px;">${i + 1}</div>
         </td>
         <td style="padding:10px 0;">
           <p style="margin:0;font-size:14px;font-weight:700;color:${COLOR.ink};">${title}</p>
@@ -221,12 +221,12 @@ function bookingCustomerHtml(booking: BookingInput, calendarUrl: string) {
           <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
             <tr>
               <td style="background:${COLOR.charcoal};border-radius:20px 20px 0 0;padding:28px 36px;">
-                <p style="margin:0;font-size:20px;font-weight:800;letter-spacing:-0.02em;color:${COLOR.cream};">Huss<span style="color:${COLOR.goldSoft};">Media</span></p>
+                <p style="margin:0;font-size:20px;font-weight:800;letter-spacing:-0.02em;color:${COLOR.cream};">Huss<span style="color:${COLOR.accentSoft};">Media</span></p>
               </td>
             </tr>
             <tr>
               <td style="background:#ffffff;padding:36px;border:1px solid ${COLOR.line};border-top:0;">
-                <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:${COLOR.gold};">Booking request received</p>
+                <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:${COLOR.accent};">Booking request received</p>
                 <h1 style="margin:14px 0 0;font-size:26px;line-height:1.15;letter-spacing:-0.02em;color:${COLOR.ink};">Thanks ${escapeHtml(booking.agentName)} — your shoot is nearly locked in.</h1>
                 <p style="margin:14px 0 0;font-size:14px;line-height:1.7;color:${COLOR.stone};">We've received your booking request and we'll confirm your time within business hours. Here's a summary of what you've booked:</p>
 
@@ -234,7 +234,7 @@ function bookingCustomerHtml(booking: BookingInput, calendarUrl: string) {
 
                 <table role="presentation" cellpadding="0" cellspacing="0" style="margin:28px auto 0;">
                   <tr>
-                    <td style="background:${COLOR.gold};border-radius:999px;">
+                    <td style="background:${COLOR.accent};border-radius:999px;">
                       <a href="${calendarUrl}" style="display:inline-block;padding:14px 30px;font-size:14px;font-weight:700;color:#ffffff;text-decoration:none;">Add to Google Calendar</a>
                     </td>
                   </tr>
@@ -242,7 +242,7 @@ function bookingCustomerHtml(booking: BookingInput, calendarUrl: string) {
                 <p style="margin:10px 0 0;font-size:12px;color:${COLOR.stone};text-align:center;">A calendar invite (.ics) is also attached to this email.</p>
 
                 <div style="margin-top:32px;padding-top:24px;border-top:1px solid ${COLOR.line};">
-                  <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:${COLOR.gold};">What happens next</p>
+                  <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:${COLOR.accent};">What happens next</p>
                   <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${steps}</table>
                 </div>
               </td>
@@ -250,7 +250,7 @@ function bookingCustomerHtml(booking: BookingInput, calendarUrl: string) {
             <tr>
               <td style="background:${COLOR.ivory};border-radius:0 0 20px 20px;border:1px solid ${COLOR.line};border-top:0;padding:22px 36px;">
                 <p style="margin:0;font-size:12px;line-height:1.7;color:${COLOR.stone};">
-                  Need to change anything? Reply to this email or call <a href="tel:${site.phone.replace(/\s/g, "")}" style="color:${COLOR.gold};font-weight:700;text-decoration:none;">${site.phoneDisplay}</a>.<br />
+                  Need to change anything? Reply to this email or call <a href="tel:${site.phone.replace(/\s/g, "")}" style="color:${COLOR.accent};font-weight:700;text-decoration:none;">${site.phoneDisplay}</a>.<br />
                   ${site.name} — ${site.serviceRegion}.
                 </p>
               </td>
@@ -448,10 +448,10 @@ export async function sendContactEmails(data: ContactInput): Promise<SendResult>
           <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#ffffff;border:1px solid ${COLOR.line};border-radius:20px;">
             <tr>
               <td style="padding:32px 36px;">
-                <p style="margin:0;font-size:18px;font-weight:800;letter-spacing:-0.02em;color:${COLOR.ink};">Huss<span style="color:${COLOR.gold};">Media</span></p>
+                <p style="margin:0;font-size:18px;font-weight:800;letter-spacing:-0.02em;color:${COLOR.ink};">Huss<span style="color:${COLOR.accent};">Media</span></p>
                 <p style="margin:18px 0 0;font-size:15px;line-height:1.7;color:${COLOR.ink};">Hi ${escapeHtml(data.name)},</p>
                 <p style="margin:12px 0 0;font-size:14px;line-height:1.7;color:${COLOR.stone};">Thanks for getting in touch — your message has landed and a real person will reply within business hours, usually within the hour.</p>
-                <p style="margin:12px 0 0;font-size:14px;line-height:1.7;color:${COLOR.stone};">If it's urgent, call us on <a href="tel:${site.phone.replace(/\s/g, "")}" style="color:${COLOR.gold};font-weight:700;text-decoration:none;">${site.phoneDisplay}</a>.</p>
+                <p style="margin:12px 0 0;font-size:14px;line-height:1.7;color:${COLOR.stone};">If it's urgent, call us on <a href="tel:${site.phone.replace(/\s/g, "")}" style="color:${COLOR.accent};font-weight:700;text-decoration:none;">${site.phoneDisplay}</a>.</p>
                 <p style="margin:18px 0 0;font-size:14px;color:${COLOR.ink};font-weight:600;">— The ${site.name} team</p>
               </td>
             </tr>

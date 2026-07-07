@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 export const inputStyles = cn(
   "h-12 w-full rounded-xl border border-line bg-surface px-4 text-ink",
   "placeholder:text-stone outline-none transition-all duration-300",
-  "focus:border-gold focus:ring-2 focus:ring-gold/20"
+  "focus:border-accent focus:ring-2 focus:ring-accent/20"
 );
 
 export const selectStyles = cn(inputStyles, "cursor-pointer appearance-none pr-11");
@@ -63,7 +63,7 @@ export function Field({
       <label htmlFor={htmlFor} className="block text-sm font-semibold text-ink">
         {label}
         {required && (
-          <span className="ml-1 text-gold" aria-hidden>
+          <span className="ml-1 text-accent" aria-hidden>
             *
           </span>
         )}

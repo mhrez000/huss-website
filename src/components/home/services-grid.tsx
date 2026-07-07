@@ -44,11 +44,11 @@ function ServiceCard({ service, feature }: { service: Service; feature: boolean 
               {service.title}
             </h3>
             <p className="mt-1.5 line-clamp-1 text-sm text-white/70">{service.blurb}</p>
-            <p className="mt-3 text-sm font-semibold text-gold-soft">
+            <p className="mt-3 text-sm font-semibold text-accent-soft">
               From {aud(service.priceFrom)}
             </p>
           </div>
-          <span className="mb-1 grid size-11 shrink-0 place-items-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-sm transition-all duration-300 group-hover:border-gold group-hover:bg-gold">
+          <span className="mb-1 grid size-11 shrink-0 place-items-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-sm transition-all duration-300 group-hover:border-accent group-hover:bg-accent">
             <ArrowUpRight
               className="size-5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
               aria-hidden

@@ -45,7 +45,7 @@ export function MobileCta() {
             >
               <Phone className="size-5" aria-hidden />
             </Button>
-            <Button href="/book" variant="gold" size="md" className="flex-1">
+            <Button href="/book" variant="accent" size="md" className="flex-1">
               Book a Shoot
             </Button>
           </div>

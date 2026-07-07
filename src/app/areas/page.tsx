@@ -60,13 +60,13 @@ export default function AreasPage() {
                     />
                   </div>
                   <div className="p-6">
-                    <p className="text-xs font-semibold uppercase tracking-widest text-gold">
+                    <p className="text-xs font-semibold uppercase tracking-widest text-accent">
                       {area.region}
                     </p>
                     <div className="mt-2 flex items-center justify-between gap-4">
                       <h2 className="text-xl font-bold text-ink">{area.name}</h2>
                       <span
-                        className="grid size-9 shrink-0 place-items-center rounded-full border border-line text-ink transition-all duration-300 group-hover:border-gold group-hover:bg-gold group-hover:text-white"
+                        className="grid size-9 shrink-0 place-items-center rounded-full border border-line text-ink transition-all duration-300 group-hover:border-accent group-hover:bg-accent group-hover:text-white"
                         aria-hidden
                       >
                         <ArrowUpRight className="size-4" />
@@ -86,7 +86,7 @@ export default function AreasPage() {
               Don&apos;t see your suburb? We cover all of metro Melbourne —{" "}
               <Link
                 href="/contact"
-                className="font-semibold text-gold underline-offset-4 hover:underline"
+                className="font-semibold text-accent underline-offset-4 hover:underline"
               >
                 get in touch
               </Link>
@@ -100,7 +100,7 @@ export default function AreasPage() {
       <section className="relative grain bg-charcoal py-24 sm:py-32">
         <Container>
           <Reveal className="mx-auto max-w-2xl text-center">
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-gold-soft">
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-accent-soft">
               Ready when you are
             </p>
             <h2 className="display text-balance text-4xl text-cream sm:text-5xl">
@@ -111,7 +111,7 @@ export default function AreasPage() {
               suburb your next listing calls home.
             </p>
             <div className="mt-10">
-              <Button href="/book" variant="gold" size="lg">
+              <Button href="/book" variant="accent" size="lg">
                 Book a Shoot
               </Button>
             </div>

@@ -135,7 +135,7 @@ export default async function ServicePage({
                 </p>
                 <Button
                   href="/book"
-                  variant="gold"
+                  variant="accent"
                   className="mt-5 w-full sm:w-auto"
                 >
                   Book this service
@@ -194,8 +194,8 @@ export default async function ServicePage({
             {service.benefits.map((benefit) => (
               <RevealItem key={benefit.title} className="h-full">
                 <div className="h-full rounded-[var(--radius-card)] bg-surface p-7 shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)]">
-                  <span className="grid size-10 place-items-center rounded-full bg-gold/10">
-                    <Check className="size-5 text-gold" aria-hidden />
+                  <span className="grid size-10 place-items-center rounded-full bg-accent/10">
+                    <Check className="size-5 text-accent" aria-hidden />
                   </span>
                   <h3 className="mt-5 text-lg font-semibold text-ink">
                     {benefit.title}
@@ -296,7 +296,7 @@ export default async function ServicePage({
                       <span className="font-semibold text-ink">
                         From {aud(item.priceFrom)}
                       </span>
-                      <span className="flex items-center gap-1 font-semibold text-gold">
+                      <span className="flex items-center gap-1 font-semibold text-accent">
                         View service
                         <ArrowRight
                           className="size-4 transition-transform duration-300 group-hover:translate-x-1"
@@ -316,7 +316,7 @@ export default async function ServicePage({
       <section className="relative grain bg-charcoal py-24 sm:py-32">
         <Container className="relative text-center">
           <Reveal>
-            <p className="eyebrow mb-4 !text-gold-soft">Next step</p>
+            <p className="eyebrow mb-4 !text-accent-soft">Next step</p>
             <h2 className="display mx-auto max-w-2xl text-balance text-4xl text-cream sm:text-5xl">
               Add {service.title.toLowerCase()} to your next campaign
             </h2>
@@ -325,7 +325,7 @@ export default async function ServicePage({
               and we&apos;ll confirm your shoot within business hours.
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-4">
-              <Button href="/book" variant="gold" size="lg">
+              <Button href="/book" variant="accent" size="lg">
                 Book this service
               </Button>
               <Button href="/services" variant="outline-light" size="lg">

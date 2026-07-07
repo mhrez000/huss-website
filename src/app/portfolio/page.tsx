@@ -60,7 +60,7 @@ export default function PortfolioPage() {
               </span>
               {headerStats.map((s) => (
                 <span key={s.label} className="flex items-center gap-x-4">
-                  <span aria-hidden className="h-1 w-1 rounded-full bg-gold/60" />
+                  <span aria-hidden className="h-1 w-1 rounded-full bg-accent/60" />
                   <span>
                     <strong className="font-semibold text-ink">
                       {s.value.toLocaleString("en-AU")}
@@ -89,7 +89,7 @@ export default function PortfolioPage() {
             <div className="relative grain overflow-hidden rounded-3xl bg-charcoal px-8 py-14 sm:px-14">
               <div className="relative z-10 flex flex-col items-start justify-between gap-8 sm:flex-row sm:items-center">
                 <div>
-                  <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-gold-soft">
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-accent-soft">
                     Your listing, next
                   </p>
                   <h2 className="display text-balance text-3xl text-cream sm:text-4xl">
@@ -100,7 +100,7 @@ export default function PortfolioPage() {
                     24 hours, ready for the portals.
                   </p>
                 </div>
-                <Button href={hero.primaryCta.href} variant="gold" size="lg">
+                <Button href={hero.primaryCta.href} variant="accent" size="lg">
                   {hero.primaryCta.label}
                   <ArrowRight className="size-4" aria-hidden />
                 </Button>

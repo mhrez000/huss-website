@@ -184,7 +184,7 @@ export function BeforeAfter() {
                 <div className="absolute inset-y-0 w-0.5 -translate-x-1/2 bg-white/90 shadow-[0_0_16px_rgba(0,0,0,0.35)]" />
                 <div
                   className={cn(
-                    "absolute top-1/2 grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-gold text-white shadow-lg ring-4 ring-white/40 transition-[transform,box-shadow] duration-200",
+                    "absolute top-1/2 grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-accent text-white shadow-lg ring-4 ring-white/40 transition-[transform,box-shadow] duration-200",
                     focused && "scale-110 ring-white/70"
                   )}
                 >

@@ -47,7 +47,7 @@ function useMelbourneToday(): string {
 function GroupHeading({ step, title }: { step: string; title: string }) {
   return (
     <div className="mb-5 flex items-center gap-3">
-      <span className="grid size-7 shrink-0 place-items-center rounded-full bg-ivory text-xs font-bold text-gold">
+      <span className="grid size-7 shrink-0 place-items-center rounded-full bg-ivory text-xs font-bold text-accent">
         {step}
       </span>
       <h2 className="text-lg font-bold text-ink">{title}</h2>
@@ -85,6 +85,12 @@ export function BookingForm() {
 
   async function onSubmit(values: BookingInput) {
     setState({ status: "idle" });
+    // Static demo hosting (GitHub Pages) has no API — simulate the flow.
+    if (process.env.NEXT_PUBLIC_DEMO === "1") {
+      await new Promise((r) => setTimeout(r, 700));
+      setState({ status: "success", calendarUrl: "" });
+      return;
+    }
     const fallbackMessage = `Something went wrong sending your booking — your details are still here. Please try again, or call us on ${site.phoneDisplay} and we'll organise it on the spot.`;
     try {
       const res = await fetch("/api/book", {
@@ -117,7 +123,7 @@ export function BookingForm() {
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="rounded-3xl border border-line bg-surface p-8 text-center shadow-[var(--shadow-card)] sm:p-12"
       >
-        <CheckCircle className="mx-auto size-14 text-gold" aria-hidden />
+        <CheckCircle className="mx-auto size-14 text-accent" aria-hidden />
         <h2 className="display mt-6 text-balance text-3xl text-ink sm:text-4xl">
           Booking request received
         </h2>
@@ -126,6 +132,11 @@ export function BookingForm() {
           inbox. We&apos;ll confirm your shoot time within business hours —
           usually within the hour.
         </p>
+        {process.env.NEXT_PUBLIC_DEMO === "1" && (
+          <p className="mx-auto mt-3 max-w-md text-xs text-stone">
+            Demo preview — no booking was sent.
+          </p>
+        )}
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           {state.calendarUrl && (
             <Button
@@ -414,9 +425,9 @@ export function BookingForm() {
                   <span
                     className={cn(
                       "inline-flex min-h-11 items-center justify-center rounded-full border border-line bg-surface px-5 py-2.5",
-                      "text-sm font-semibold text-ink transition-all duration-300 hover:border-gold/60",
-                      "peer-checked:border-gold peer-checked:bg-gold peer-checked:text-ink",
-                      "peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-gold"
+                      "text-sm font-semibold text-ink transition-all duration-300 hover:border-accent/60",
+                      "peer-checked:border-accent peer-checked:bg-accent peer-checked:text-white",
+                      "peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent"
                     )}
                   >
                     {service}
@@ -462,7 +473,7 @@ export function BookingForm() {
 
         <div>
           <Button
-            variant="gold"
+            variant="accent"
             size="lg"
             type="submit"
             disabled={isSubmitting}

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope } from "next/font/google";
+import { Inter } from "next/font/google";
 import { site } from "@/content/site";
 import { localBusinessSchema, photographyServiceSchema, jsonLd } from "@/lib/schema";
 import { SmoothScroll } from "@/components/smooth-scroll";
@@ -8,9 +8,11 @@ import { SiteFooter } from "@/components/site-footer";
 import { MobileCta } from "@/components/mobile-cta";
 import "./globals.css";
 
-const manrope = Manrope({
+// Inter tracks SF Pro's metrics closely; Apple devices fall back to real
+// SF Pro via the -apple-system stack in globals.css.
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-manrope",
+  variable: "--font-inter",
   display: "swap",
 });
 
@@ -47,7 +49,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#faf8f4",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
 };
@@ -56,7 +58,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-AU" className={manrope.variable}>
+    <html lang="en-AU" className={inter.variable}>
       <body>
         <a
           href="#main"

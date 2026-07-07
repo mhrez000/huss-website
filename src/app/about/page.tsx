@@ -175,7 +175,7 @@ export default function AboutPage() {
               <RevealItem key={s.label} className="text-center">
                 <p className="display text-4xl text-cream sm:text-5xl">
                   <Counter value={s.value} decimals={s.decimals ?? 0} />
-                  <span className="text-gold-soft">{s.suffix}</span>
+                  <span className="text-accent-soft">{s.suffix}</span>
                 </p>
                 <p className="mt-3 text-sm text-cream/60">{s.label}</p>
               </RevealItem>
@@ -196,7 +196,7 @@ export default function AboutPage() {
             {approach.map((a) => (
               <RevealItem key={a.title} className="flex">
                 <div className="flex w-full flex-col rounded-3xl bg-surface p-8 shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)]">
-                  <span className="grid size-12 place-items-center rounded-full bg-ivory text-gold">
+                  <span className="grid size-12 place-items-center rounded-full bg-ivory text-accent">
                     <a.icon className="size-5" aria-hidden />
                   </span>
                   <h3 className="mt-6 text-lg font-bold text-ink">{a.title}</h3>
@@ -269,7 +269,7 @@ export default function AboutPage() {
               {switchReasons.map((r) => (
                 <RevealItem key={r.title} className="flex items-start gap-4">
                   <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-full bg-ivory">
-                    <Check className="size-4 text-gold" aria-hidden />
+                    <Check className="size-4 text-accent" aria-hidden />
                   </span>
                   <div>
                     <p className="text-lg font-semibold text-ink">{r.title}</p>
@@ -286,7 +286,7 @@ export default function AboutPage() {
       <section className="relative grain bg-charcoal py-24 sm:py-32">
         <Container className="relative">
           <Reveal className="mx-auto max-w-3xl text-center">
-            <p className="eyebrow mb-4 !text-gold-soft">Work with Huss</p>
+            <p className="eyebrow mb-4 !text-accent-soft">Work with Huss</p>
             <h2 className="display text-balance text-4xl text-cream sm:text-5xl">
               Your next campaign deserves this level of care
             </h2>
@@ -295,7 +295,7 @@ export default function AboutPage() {
               either way, the reply comes from the photographer himself.
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-4">
-              <Button href="/book" variant="gold" size="lg">
+              <Button href="/book" variant="accent" size="lg">
                 Book a Shoot
               </Button>
               <Button href="/contact" variant="outline-light" size="lg">

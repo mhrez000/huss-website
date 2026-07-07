@@ -11,12 +11,12 @@ export function SiteFooter() {
         {/* CTA band */}
         <div className="flex flex-col items-start justify-between gap-8 border-b border-line-dark py-16 lg:flex-row lg:items-center">
           <div>
-            <p className="eyebrow mb-3 !text-gold-soft">HussMedia</p>
+            <p className="eyebrow mb-3 !text-accent-soft">HussMedia</p>
             <h2 className="display max-w-xl text-3xl text-cream sm:text-4xl">
               Your next listing deserves better photography.
             </h2>
           </div>
-          <Button href="/book" variant="gold" size="lg">
+          <Button href="/book" variant="accent" size="lg">
             Book a Shoot
           </Button>
         </div>
@@ -25,7 +25,7 @@ export function SiteFooter() {
         <div className="grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <p className="text-lg font-extrabold tracking-tight">
-              Huss<span className="text-gold-soft">Media</span>
+              Huss<span className="text-accent-soft">Media</span>
             </p>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-cream/60">
               {site.description}
@@ -37,7 +37,7 @@ export function SiteFooter() {
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm font-semibold text-cream/60 transition-colors hover:text-gold-soft"
+                  className="text-sm font-semibold text-cream/60 transition-colors hover:text-accent-soft"
                 >
                   {s.label}
                 </a>
@@ -93,7 +93,7 @@ export function SiteFooter() {
                   href={`tel:${site.phone.replace(/\s/g, "")}`}
                   className="flex items-center gap-3 transition-colors hover:text-cream"
                 >
-                  <Phone className="size-4 text-gold-soft" aria-hidden />
+                  <Phone className="size-4 text-accent-soft" aria-hidden />
                   {site.phoneDisplay}
                 </a>
               </li>
@@ -102,12 +102,12 @@ export function SiteFooter() {
                   href={`mailto:${site.email}`}
                   className="flex items-center gap-3 transition-colors hover:text-cream"
                 >
-                  <Mail className="size-4 text-gold-soft" aria-hidden />
+                  <Mail className="size-4 text-accent-soft" aria-hidden />
                   {site.email}
                 </a>
               </li>
               <li className="flex items-start gap-3">
-                <MapPin className="mt-0.5 size-4 shrink-0 text-gold-soft" aria-hidden />
+                <MapPin className="mt-0.5 size-4 shrink-0 text-accent-soft" aria-hidden />
                 {site.serviceRegion}
               </li>
             </ul>

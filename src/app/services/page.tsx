@@ -82,8 +82,8 @@ export default function ServicesPage() {
                             key={benefit.title}
                             className="flex items-center gap-3 text-sm font-medium text-ink"
                           >
-                            <span className="grid size-6 shrink-0 place-items-center rounded-full bg-gold/10">
-                              <Check className="size-3.5 text-gold" aria-hidden />
+                            <span className="grid size-6 shrink-0 place-items-center rounded-full bg-accent/10">
+                              <Check className="size-3.5 text-accent" aria-hidden />
                             </span>
                             {benefit.title}
                           </li>
@@ -116,7 +116,7 @@ export default function ServicesPage() {
       <section className="relative grain bg-charcoal py-24 sm:py-32">
         <Container className="relative text-center">
           <Reveal>
-            <p className="eyebrow mb-4 !text-gold-soft">Ready when you are</p>
+            <p className="eyebrow mb-4 !text-accent-soft">Ready when you are</p>
             <h2 className="display mx-auto max-w-2xl text-balance text-4xl text-cream sm:text-5xl">
               Not sure which combination your listing needs?
             </h2>
@@ -125,7 +125,7 @@ export default function ServicesPage() {
               the right services and confirm your time within business hours.
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-4">
-              <Button href="/book" variant="gold" size="lg">
+              <Button href="/book" variant="accent" size="lg">
                 Book a Shoot
               </Button>
               <Button href="/pricing" variant="outline-light" size="lg">

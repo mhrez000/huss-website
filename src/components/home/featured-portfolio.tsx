@@ -62,7 +62,7 @@ export function FeaturedPortfolio() {
                   <p className="text-sm font-semibold text-cream">
                     {item.category}
                   </p>
-                  <p className="mt-0.5 text-xs tracking-wide text-gold-soft">
+                  <p className="mt-0.5 text-xs tracking-wide text-accent-soft">
                     {item.location}
                   </p>
                 </figcaption>

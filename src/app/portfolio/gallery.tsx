@@ -208,7 +208,7 @@ export function PortfolioGallery({ items }: { items: PortfolioItem[] }) {
                 <span className="absolute inset-0 bg-gradient-to-t from-charcoal/70 via-charcoal/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
                   <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5">
                     <span className="text-left">
-                      <span className="block text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-gold-soft">
+                      <span className="block text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-accent-soft">
                         {item.category}
                       </span>
                       <span className="mt-1 block text-sm font-medium text-cream">

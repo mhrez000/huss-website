@@ -205,7 +205,7 @@ export default async function AreaPage({
                   <Link
                     key={n.slug}
                     href={`/areas/${n.slug}`}
-                    className="inline-flex min-h-11 items-center rounded-full border border-line bg-surface px-6 py-2.5 text-sm font-semibold text-ink transition-all duration-300 hover:-translate-y-0.5 hover:border-gold hover:text-gold"
+                    className="inline-flex min-h-11 items-center rounded-full border border-line bg-surface px-6 py-2.5 text-sm font-semibold text-ink transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:text-accent"
                   >
                     {n.name}
                   </Link>
@@ -220,7 +220,7 @@ export default async function AreaPage({
       <section className="relative grain bg-charcoal py-24 sm:py-32">
         <Container>
           <Reveal className="mx-auto max-w-2xl text-center">
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-gold-soft">
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-accent-soft">
               No travel fees &middot; 24-hour delivery
             </p>
             <h2 className="display text-balance text-4xl text-cream sm:text-5xl">
@@ -231,7 +231,7 @@ export default async function AreaPage({
               online in under two minutes, delivered next morning.
             </p>
             <div className="mt-10">
-              <Button href="/book" variant="gold" size="lg">
+              <Button href="/book" variant="accent" size="lg">
                 Book Your {area.name} Shoot
               </Button>
             </div>

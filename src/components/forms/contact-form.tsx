@@ -36,6 +36,12 @@ export function ContactForm() {
 
   async function onSubmit(values: ContactInput) {
     setState({ status: "idle" });
+    // Static demo hosting (GitHub Pages) has no API — simulate the flow.
+    if (process.env.NEXT_PUBLIC_DEMO === "1") {
+      await new Promise((r) => setTimeout(r, 700));
+      setState({ status: "success" });
+      return;
+    }
     const fallbackMessage = `Something went wrong sending your message — your details are still here. Please try again, or call us on ${site.phoneDisplay}.`;
     try {
       const res = await fetch("/api/contact", {
@@ -66,7 +72,7 @@ export function ContactForm() {
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="flex h-full flex-col items-center justify-center rounded-3xl border border-line bg-surface p-8 text-center shadow-[var(--shadow-card)] sm:p-12"
       >
-        <CheckCircle className="size-12 text-gold" aria-hidden />
+        <CheckCircle className="size-12 text-accent" aria-hidden />
         <h2 className="display mt-5 text-balance text-2xl text-ink sm:text-3xl">
           Message received
         </h2>
@@ -75,6 +81,11 @@ export function ContactForm() {
           and a real person will reply within business hours, usually within
           the hour.
         </p>
+        {process.env.NEXT_PUBLIC_DEMO === "1" && (
+          <p className="mt-3 max-w-sm text-xs text-stone">
+            Demo preview — no message was sent.
+          </p>
+        )}
       </motion.div>
     );
   }
@@ -142,7 +153,7 @@ export function ContactForm() {
         {state.status === "error" && <FormAlert>{state.message}</FormAlert>}
 
         <Button
-          variant="gold"
+          variant="accent"
           size="lg"
           type="submit"
           disabled={isSubmitting}

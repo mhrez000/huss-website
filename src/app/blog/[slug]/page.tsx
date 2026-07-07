@@ -174,7 +174,7 @@ export default async function BlogPostPage({
                       {section.list.map((item, k) => (
                         <li key={k} className="flex items-start gap-3">
                           <Check
-                            className="mt-1 h-5 w-5 shrink-0 text-gold"
+                            className="mt-1 h-5 w-5 shrink-0 text-accent"
                             aria-hidden
                           />
                           <span className="text-[1.06rem] leading-[1.7] text-ink/85">
@@ -192,7 +192,7 @@ export default async function BlogPostPage({
             <Reveal className="mt-16">
               <div className="relative grain overflow-hidden rounded-3xl bg-charcoal p-8 sm:p-12">
                 <div className="relative">
-                  <p className="eyebrow mb-3 !text-gold-soft">Next step</p>
+                  <p className="eyebrow mb-3 !text-accent-soft">Next step</p>
                   <h2 className="display text-balance text-3xl sm:text-4xl text-cream">
                     Put this into practice on your next listing
                   </h2>
@@ -202,7 +202,7 @@ export default async function BlogPostPage({
                     minutes.
                   </p>
                   <div className="mt-8">
-                    <Button href="/book" variant="gold" size="lg">
+                    <Button href="/book" variant="accent" size="lg">
                       Book a Shoot
                       <ArrowUpRight className="h-5 w-5" aria-hidden />
                     </Button>
@@ -226,7 +226,7 @@ export default async function BlogPostPage({
             </div>
             <Link
               href="/blog"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-gold transition-colors hover:text-ink"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-accent transition-colors hover:text-ink"
             >
               All articles
               <ArrowRight className="h-4 w-4" aria-hidden />
@@ -259,7 +259,7 @@ export default async function BlogPostPage({
                     <h3 className="mt-3 text-lg font-bold leading-snug text-ink">
                       {other.title}
                     </h3>
-                    <span className="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-semibold text-gold">
+                    <span className="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-semibold text-accent">
                       Read article
                       <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden />
                     </span>

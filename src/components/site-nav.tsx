@@ -104,18 +104,18 @@ export function SiteNav() {
         )}
       >
         <nav
-          className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-5 sm:px-8 lg:h-[4.5rem] lg:px-12"
+          className="mx-auto flex h-12 w-full max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-12"
           aria-label="Main"
         >
           {/* Wordmark */}
           <Link
             href="/"
             className={cn(
-              "text-lg font-extrabold tracking-tight transition-colors",
+              "text-base font-bold tracking-tight transition-colors",
               overHero ? "text-white" : "text-ink"
             )}
           >
-            Huss<span className="text-gold">Media</span>
+            Huss<span className="text-accent">Media</span>
           </Link>
 
           {/* Desktop links */}
@@ -130,7 +130,7 @@ export function SiteNav() {
                   <Link
                     href={item.href}
                     className={cn(
-                      "rounded-full px-3.5 py-2 text-sm font-medium transition-colors",
+                      "rounded-full px-3 py-2 text-xs font-normal transition-colors",
                       overHero
                         ? active
                           ? "text-white"
@@ -153,7 +153,7 @@ export function SiteNav() {
             <a
               href={`tel:${site.phone.replace(/\s/g, "")}`}
               className={cn(
-                "flex items-center gap-2 text-sm font-semibold transition-colors",
+                "flex items-center gap-2 text-xs font-medium transition-colors",
                 overHero ? "text-white/80 hover:text-white" : "text-stone hover:text-ink"
               )}
             >
@@ -184,7 +184,7 @@ export function SiteNav() {
 
       {/* Mobile menu — a SIBLING of the header, not a descendant: the header's
           backdrop-blur creates a containing block for fixed descendants, which
-          would resolve the panel's height against the 64px header box (=> 0). */}
+          would resolve the panel's height against the 48px header box (=> 0). */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -194,7 +194,7 @@ export function SiteNav() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-x-0 top-16 z-40 flex h-[calc(100dvh-4rem)] flex-col bg-cream lg:hidden"
+            className="fixed inset-x-0 top-12 z-40 flex h-[calc(100dvh-3rem)] flex-col bg-cream lg:hidden"
           >
             <ul className="flex-1 space-y-1 overflow-y-auto px-6 pt-6">
               {nav.map((item, i) => (
@@ -217,7 +217,7 @@ export function SiteNav() {
             <div className="space-y-3 border-t hairline p-6 pb-10">
               <Button
                 href="/book"
-                variant="gold"
+                variant="accent"
                 size="lg"
                 className="w-full"
                 onClick={closeMenu}

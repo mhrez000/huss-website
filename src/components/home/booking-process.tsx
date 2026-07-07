@@ -40,7 +40,7 @@ export function BookingProcess() {
           />
           <motion.div
             style={reduce ? undefined : { scaleX }}
-            className="absolute inset-x-0 top-1.5 hidden h-px origin-left bg-gold lg:block"
+            className="absolute inset-x-0 top-1.5 hidden h-px origin-left bg-accent lg:block"
             aria-hidden
           />
 
@@ -52,7 +52,7 @@ export function BookingProcess() {
               <RevealItem key={step.num}>
                 {/* Timeline node — sits on the connecting line */}
                 <span
-                  className="relative z-10 mb-8 hidden size-3 rounded-full border-2 border-gold bg-cream lg:block"
+                  className="relative z-10 mb-8 hidden size-3 rounded-full border-2 border-accent bg-cream lg:block"
                   aria-hidden
                 />
                 <span
@@ -71,7 +71,7 @@ export function BookingProcess() {
         </div>
 
         <Reveal className="mt-16 text-center lg:mt-20">
-          <Button href="/book" variant="gold" size="lg">
+          <Button href="/book" variant="accent" size="lg">
             Book online now
           </Button>
         </Reveal>

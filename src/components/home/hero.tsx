@@ -112,7 +112,7 @@ export function Hero() {
         >
           <motion.p
             variants={item}
-            className="text-xs font-semibold uppercase tracking-[0.22em] text-gold-soft"
+            className="text-xs font-semibold uppercase tracking-[0.22em] text-accent-soft"
           >
             Melbourne real estate photography
           </motion.p>
@@ -135,7 +135,7 @@ export function Hero() {
             variants={item}
             className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center"
           >
-            <Button href={hero.primaryCta.href} variant="gold" size="lg">
+            <Button href={hero.primaryCta.href} variant="accent" size="lg">
               {hero.primaryCta.label}
             </Button>
             <Button href={hero.secondaryCta.href} variant="outline-light" size="lg">
@@ -146,11 +146,11 @@ export function Hero() {
           {/* Trust chips */}
           <motion.div variants={item} className="mt-10 flex flex-wrap items-center gap-3">
             <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white/85 backdrop-blur-sm">
-              <Star className="size-3.5 fill-gold-soft text-gold-soft" aria-hidden />
+              <Star className="size-3.5 fill-accent-soft text-accent-soft" aria-hidden />
               {site.googleRating.toFixed(1)} Google &mdash; {site.googleReviewCount} reviews
             </span>
             <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white/85 backdrop-blur-sm">
-              <Clock className="size-3.5 text-gold-soft" aria-hidden />
+              <Clock className="size-3.5 text-accent-soft" aria-hidden />
               24hr delivery
             </span>
           </motion.div>
@@ -170,7 +170,7 @@ export function Hero() {
         </span>
         <span className="block h-12 w-px overflow-hidden bg-white/15">
           <motion.span
-            className="block h-full w-full bg-gold-soft"
+            className="block h-full w-full bg-accent-soft"
             animate={reduce ? undefined : { y: ["-100%", "100%"] }}
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
           />

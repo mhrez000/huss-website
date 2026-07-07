@@ -25,7 +25,7 @@ export function WhyUs() {
           {whyUs.items.map((item) => (
             <RevealItem key={item.title} className="h-full">
               <div className="h-full rounded-2xl border border-line bg-surface p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card)]">
-                <div className="grid size-12 place-items-center rounded-xl bg-gold/10 text-gold">
+                <div className="grid size-12 place-items-center rounded-xl bg-accent/10 text-accent">
                   <Icon name={item.icon} className="size-5" />
                 </div>
                 <h3 className="mt-5 font-bold text-ink">{item.title}</h3>

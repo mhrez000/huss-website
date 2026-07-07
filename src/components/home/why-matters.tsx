@@ -17,7 +17,7 @@ export function WhyMatters() {
           {whyMatters.cards.map((card) => (
             <RevealItem key={card.title} className="h-full">
               <article className="h-full rounded-3xl bg-surface p-8 shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)] lg:p-10">
-                <p className="display text-5xl text-gold sm:text-6xl">{card.stat}</p>
+                <p className="display text-5xl text-accent sm:text-6xl">{card.stat}</p>
                 <h3 className="mt-6 text-xl font-bold text-ink">{card.title}</h3>
                 <p className="mt-3 leading-relaxed text-stone">{card.text}</p>
               </article>

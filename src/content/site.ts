@@ -43,9 +43,12 @@ export const nav = [
   { label: "Contact", href: "/contact" },
 ];
 
+/** Prefix local /public assets with the base path on static (GitHub Pages) builds. */
+const asset = (p: string) => `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${p}`;
+
 export const heroMedia = {
-  video: "/hero.mp4",
-  poster: "/hero-poster.jpg",
+  video: asset("/hero.mp4"),
+  poster: asset("/hero-poster.jpg"),
 };
 
 export const hero = {

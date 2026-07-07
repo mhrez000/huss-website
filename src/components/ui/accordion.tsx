@@ -50,7 +50,7 @@ export function Accordion({
                 className={cn(
                   "grid size-9 shrink-0 place-items-center rounded-full border transition-transform duration-300",
                   isOpen && "rotate-45",
-                  dark ? "border-line-dark text-gold-soft" : "border-line text-gold"
+                  dark ? "border-line-dark text-accent-soft" : "border-line text-accent"
                 )}
                 aria-hidden
               >

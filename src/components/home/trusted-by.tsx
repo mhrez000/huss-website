@@ -52,7 +52,7 @@ export function TrustedBy() {
             <RevealItem key={stat.label} className="text-center">
               <p className="display text-3xl text-ink sm:text-4xl">
                 <Counter value={stat.value} decimals={stat.decimals ?? 0} />
-                <span className="text-gold">{stat.suffix}</span>
+                <span className="text-accent">{stat.suffix}</span>
               </p>
               <p className="mt-2 text-sm text-stone">{stat.label}</p>
             </RevealItem>

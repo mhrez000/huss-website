@@ -90,7 +90,7 @@ export default function BlogPage() {
                     {featured.title}
                   </h2>
                   <p className="mt-4 leading-relaxed text-stone">{featured.excerpt}</p>
-                  <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-gold">
+                  <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-accent">
                     Read article
                     <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden />
                   </span>
@@ -137,7 +137,7 @@ export default function BlogPage() {
                     <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-stone">
                       {post.excerpt}
                     </p>
-                    <span className="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-semibold text-gold">
+                    <span className="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-semibold text-accent">
                       Read article
                       <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden />
                     </span>
@@ -153,7 +153,7 @@ export default function BlogPage() {
       <section className="relative grain bg-charcoal py-24 sm:py-32">
         <Container className="relative">
           <Reveal className="mx-auto max-w-3xl text-center">
-            <p className="eyebrow mb-4 !text-gold-soft">Put it into practice</p>
+            <p className="eyebrow mb-4 !text-accent-soft">Put it into practice</p>
             <h2 className="display text-balance text-4xl sm:text-5xl text-cream">
               Great marketing starts with great media
             </h2>
@@ -162,7 +162,7 @@ export default function BlogPage() {
               can&apos;t scroll past. Book your next shoot in under two minutes.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Button href="/book" variant="gold" size="lg">
+              <Button href="/book" variant="accent" size="lg">
                 Book a Shoot
                 <ArrowUpRight className="h-5 w-5" aria-hidden />
               </Button>

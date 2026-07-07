@@ -72,11 +72,11 @@ export default function PricingPage() {
                     "relative flex w-full flex-col rounded-3xl border bg-surface p-8",
                     "shadow-[var(--shadow-card)] transition-all duration-300",
                     "hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)]",
-                    p.popular ? "border-gold ring-1 ring-gold" : "border-line"
+                    p.popular ? "border-accent ring-1 ring-accent" : "border-line"
                   )}
                 >
                   {p.popular && (
-                    <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-gold px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-ink">
+                    <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-accent px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white">
                       Most popular
                     </span>
                   )}
@@ -93,7 +93,7 @@ export default function PricingPage() {
                         key={line}
                         className="flex items-start gap-2.5 text-sm leading-relaxed text-ink"
                       >
-                        <Check className="mt-0.5 size-4 shrink-0 text-gold" aria-hidden />
+                        <Check className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden />
                         {line}
                       </li>
                     ))}
@@ -101,14 +101,14 @@ export default function PricingPage() {
 
                   <p className="mt-6">
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-ivory px-3 py-1 text-xs font-medium text-ink">
-                      <Clock className="size-3.5 text-gold" aria-hidden />
+                      <Clock className="size-3.5 text-accent" aria-hidden />
                       {p.turnaround}
                     </span>
                   </p>
 
                   <Button
                     href="/book"
-                    variant={p.popular ? "gold" : "primary"}
+                    variant={p.popular ? "accent" : "primary"}
                     className="mt-6 w-full"
                   >
                     {p.cta}
@@ -144,7 +144,7 @@ export default function PricingPage() {
                       <p className="text-sm font-semibold text-ink">{e.name}</p>
                       <p className="mt-0.5 text-xs text-stone">{e.unit}</p>
                     </div>
-                    <p className="font-semibold text-gold">{aud(e.price)}</p>
+                    <p className="font-semibold text-accent">{aud(e.price)}</p>
                   </div>
                 ))}
               </div>
@@ -155,7 +155,7 @@ export default function PricingPage() {
           <RevealGroup className="mt-16 grid gap-10 sm:mt-20 sm:grid-cols-3 sm:gap-8">
             {reassurance.map((r) => (
               <RevealItem key={r.title} className="flex items-start gap-4">
-                <span className="grid size-11 shrink-0 place-items-center rounded-full bg-ivory text-gold">
+                <span className="grid size-11 shrink-0 place-items-center rounded-full bg-ivory text-accent">
                   <r.icon className="size-5" aria-hidden />
                 </span>
                 <div>
@@ -195,7 +195,7 @@ export default function PricingPage() {
       <section className="relative grain bg-charcoal py-24 sm:py-32">
         <Container className="relative">
           <Reveal className="mx-auto max-w-3xl text-center">
-            <p className="eyebrow mb-4 !text-gold-soft">Ready when you are</p>
+            <p className="eyebrow mb-4 !text-accent-soft">Ready when you are</p>
             <h2 className="display text-balance text-4xl text-cream sm:text-5xl">
               {finalCta.heading}
             </h2>
@@ -203,7 +203,7 @@ export default function PricingPage() {
               {finalCta.text}
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-4">
-              <Button href={finalCta.cta.href} variant="gold" size="lg">
+              <Button href={finalCta.cta.href} variant="accent" size="lg">
                 {finalCta.cta.label}
               </Button>
             </div>

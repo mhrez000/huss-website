@@ -6,7 +6,7 @@ const buttonVariants = cva(
   [
     "inline-flex items-center justify-center gap-2 rounded-full font-semibold",
     "transition-all duration-300 ease-[var(--ease-out-expo)]",
-    "focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-gold",
+    "focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-accent",
     "active:scale-[0.98] select-none whitespace-nowrap",
   ].join(" "),
   {
@@ -14,7 +14,7 @@ const buttonVariants = cva(
       variant: {
         primary:
           "bg-ink text-cream hover:bg-charcoal hover:shadow-card-hover hover:-translate-y-0.5",
-        gold: "bg-gold text-ink hover:bg-gold-soft hover:shadow-card-hover hover:-translate-y-0.5",
+        accent: "bg-accent text-white hover:bg-accent-hover hover:shadow-card-hover hover:-translate-y-0.5",
         outline:
           "border border-line bg-transparent text-ink hover:border-ink hover:-translate-y-0.5",
         "outline-light":

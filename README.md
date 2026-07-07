@@ -1,7 +1,9 @@
 # HussMedia — Residential Real Estate Photography
 
 Premium, conversion-focused website for HussMedia, a residential real estate
-photography business in Melbourne, Australia.
+photography business in Melbourne, Australia. Design language is aligned to
+the Apple Store: white/#f5f5f7 sections, #1d1d1f text, Apple-blue (#0071e3)
+CTAs, orange (#b64400) eyebrow labels, Inter/SF Pro typography, flat cards.
 
 Built with **Next.js (App Router) · TypeScript · Tailwind CSS v4 · Framer Motion · Lenis**.
 

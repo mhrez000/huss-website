@@ -19,7 +19,7 @@ function Stars({ count = 5, className }: { count?: number; className?: string })
       {Array.from({ length: count }).map((_, i) => (
         <Star
           key={i}
-          className={cn("size-4 fill-gold-soft text-gold-soft", className)}
+          className={cn("size-4 fill-accent-soft text-accent-soft", className)}
           aria-hidden
         />
       ))}
@@ -77,7 +77,7 @@ export function Testimonials() {
           <Reveal delay={0.1} className="flex shrink-0 items-center gap-5">
             {/* Google rating badge */}
             <div className="flex items-center gap-3 rounded-full border border-line-dark bg-white/5 px-4 py-2">
-              <span className="text-lg font-extrabold text-gold-soft" aria-hidden>
+              <span className="text-lg font-extrabold text-accent-soft" aria-hidden>
                 G
               </span>
               <span className="text-sm font-bold text-cream">

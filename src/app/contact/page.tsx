@@ -55,12 +55,12 @@ export default function ContactPage() {
                 href={`tel:${site.phone.replace(/\s/g, "")}`}
                 className="group flex items-center gap-5 rounded-3xl border border-line bg-surface p-6 shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)]"
               >
-                <span className="grid size-12 shrink-0 place-items-center rounded-full bg-ivory text-gold">
+                <span className="grid size-12 shrink-0 place-items-center rounded-full bg-ivory text-accent">
                   <Phone className="size-5" aria-hidden />
                 </span>
                 <span>
                   <span className="block text-sm text-stone">Call us</span>
-                  <span className="block text-xl font-bold text-ink transition-colors group-hover:text-gold sm:text-2xl">
+                  <span className="block text-xl font-bold text-ink transition-colors group-hover:text-accent sm:text-2xl">
                     {site.phoneDisplay}
                   </span>
                 </span>
@@ -73,12 +73,12 @@ export default function ContactPage() {
                 href={`mailto:${site.email}`}
                 className="group flex items-center gap-5 rounded-3xl border border-line bg-surface p-6 shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)]"
               >
-                <span className="grid size-12 shrink-0 place-items-center rounded-full bg-ivory text-gold">
+                <span className="grid size-12 shrink-0 place-items-center rounded-full bg-ivory text-accent">
                   <Mail className="size-5" aria-hidden />
                 </span>
                 <span>
                   <span className="block text-sm text-stone">Email us</span>
-                  <span className="block text-xl font-bold text-ink transition-colors group-hover:text-gold sm:text-2xl">
+                  <span className="block text-xl font-bold text-ink transition-colors group-hover:text-accent sm:text-2xl">
                     {site.email}
                   </span>
                 </span>
@@ -89,7 +89,7 @@ export default function ContactPage() {
             <RevealItem>
               <div className="rounded-3xl border border-line bg-surface p-6 shadow-[var(--shadow-card)]">
                 <p className="mb-4 flex items-center gap-2 text-sm font-semibold text-ink">
-                  <Clock className="size-4 text-gold" aria-hidden />
+                  <Clock className="size-4 text-accent" aria-hidden />
                   Business hours
                 </p>
                 <table className="w-full text-sm">
@@ -111,14 +111,14 @@ export default function ContactPage() {
                 </table>
                 <p className="mt-4 flex items-start gap-2 text-sm text-stone">
                   <MapPin
-                    className="mt-0.5 size-4 shrink-0 text-gold"
+                    className="mt-0.5 size-4 shrink-0 text-accent"
                     aria-hidden
                   />
                   <span>
                     Metro Melbourne — no travel fees.{" "}
                     <Link
                       href="/areas"
-                      className="font-semibold text-gold transition-colors hover:text-ink"
+                      className="font-semibold text-accent transition-colors hover:text-ink"
                     >
                       See all areas we service
                     </Link>
@@ -131,7 +131,7 @@ export default function ContactPage() {
                       href={s.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex min-h-11 items-center text-sm font-semibold text-stone transition-colors hover:text-gold"
+                      className="inline-flex min-h-11 items-center text-sm font-semibold text-stone transition-colors hover:text-accent"
                     >
                       {s.label}
                     </a>
@@ -143,7 +143,7 @@ export default function ContactPage() {
             {/* Prefer to just book? */}
             <RevealItem>
               <div className="relative overflow-hidden rounded-3xl bg-charcoal p-8 text-cream grain">
-                <p className="eyebrow mb-3 !text-gold-soft">
+                <p className="eyebrow mb-3 !text-accent-soft">
                   Prefer to just book?
                 </p>
                 <h2 className="display text-balance text-2xl text-cream sm:text-3xl">
@@ -153,7 +153,7 @@ export default function ContactPage() {
                   Pick a package, choose a time and get instant confirmation —
                   the whole thing takes under two minutes.
                 </p>
-                <Button href="/book" variant="gold" size="md" className="mt-6">
+                <Button href="/book" variant="accent" size="md" className="mt-6">
                   Book a Shoot
                   <ArrowRight className="size-4" aria-hidden />
                 </Button>

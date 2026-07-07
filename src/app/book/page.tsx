@@ -18,7 +18,7 @@ import { BookingForm } from "@/components/forms/booking-form";
 export const metadata: Metadata = {
   title: "Book a Shoot",
   description:
-    "Book professional real estate photography in Melbourne in under two minutes. 24-hour delivery, weather-safe rescheduling and instant confirmation.",
+    "Book professional real estate photography in Melbourne in under two minutes. 24-hour delivery, weather-safe rescheduling and an instant booking summary.",
   openGraph: {
     title: "Book a Shoot",
     description:
@@ -69,11 +69,11 @@ export default function BookPage() {
           </h1>
           <p className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-lg text-stone">
             <span>24-hour delivery</span>
-            <span className="text-gold" aria-hidden>
+            <span className="text-accent" aria-hidden>
               •
             </span>
             <span>Weather-safe rescheduling</span>
-            <span className="text-gold" aria-hidden>
+            <span className="text-accent" aria-hidden>
               •
             </span>
             <span>Instant booking summary</span>
@@ -96,7 +96,7 @@ export default function BookPage() {
                   <ol className="space-y-5">
                     {nextSteps.map((step, i) => (
                       <li key={step.title} className="flex gap-4">
-                        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ivory text-xs font-bold text-gold">
+                        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ivory text-xs font-bold text-accent">
                           {i + 1}
                         </span>
                         <div>
@@ -118,16 +118,16 @@ export default function BookPage() {
                   <div className="space-y-3">
                     <a
                       href={`tel:${site.phone.replace(/\s/g, "")}`}
-                      className="flex min-h-11 items-center gap-3 font-semibold text-ink transition-colors hover:text-gold"
+                      className="flex min-h-11 items-center gap-3 font-semibold text-ink transition-colors hover:text-accent"
                     >
-                      <Phone className="size-4 text-gold" aria-hidden />
+                      <Phone className="size-4 text-accent" aria-hidden />
                       {site.phoneDisplay}
                     </a>
                     <a
                       href={`mailto:${site.email}`}
-                      className="flex min-h-11 items-center gap-3 font-semibold text-ink transition-colors hover:text-gold"
+                      className="flex min-h-11 items-center gap-3 font-semibold text-ink transition-colors hover:text-accent"
                     >
-                      <Mail className="size-4 text-gold" aria-hidden />
+                      <Mail className="size-4 text-accent" aria-hidden />
                       {site.email}
                     </a>
                   </div>
@@ -158,7 +158,7 @@ export default function BookPage() {
                   </ul>
                   <Link
                     href="/pricing"
-                    className="mt-5 inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-gold transition-colors hover:text-ink"
+                    className="mt-5 inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-accent transition-colors hover:text-ink"
                   >
                     Compare packages
                     <ArrowRight className="size-4" aria-hidden />
@@ -174,7 +174,7 @@ export default function BookPage() {
                       key={label}
                       className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2.5 text-xs font-semibold text-ink"
                     >
-                      <ChipIcon className="size-3.5 text-gold" aria-hidden />
+                      <ChipIcon className="size-3.5 text-accent" aria-hidden />
                       {label}
                     </span>
                   ))}

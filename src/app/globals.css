@@ -2,40 +2,43 @@
 
 /* ===========================================================
    HussMedia — design tokens
-   Warm, premium, editorial. Photography is the hero.
+   Aligned to the Apple Store design language: neutral whites
+   and greys, near-black text, Apple-blue accent, flat cards,
+   compact chrome. Photography is the hero.
    =========================================================== */
 
 @theme {
-  /* Palette */
-  --color-cream: #faf8f4; /* warm white — page background */
-  --color-ivory: #f3efe8; /* off white — alternating sections */
+  /* Palette (Apple Store) */
+  --color-cream: #ffffff; /* page background */
+  --color-ivory: #f5f5f7; /* alternating sections — Apple light grey */
   --color-surface: #ffffff; /* cards */
-  --color-charcoal: #191817; /* dark sections / footer */
-  --color-coal: #211f1d; /* dark cards on charcoal */
-  --color-ink: #23211e; /* primary text */
-  --color-stone: #6b655b; /* muted grey text (>=4.5:1 on cream/ivory/white) */
-  --color-gold: #b08d57; /* warm gold accent */
-  --color-gold-soft: #c8a97d; /* lighter gold for dark bg */
-  --color-gold-text: #82633a; /* darker gold for small text on light bg (~4.7:1 on cream) */
-  --color-line: #e7e1d6; /* hairlines on light */
-  --color-line-dark: #35322e; /* hairlines on dark */
+  --color-charcoal: #1d1d1f; /* dark sections / footer — Apple black */
+  --color-coal: #2c2c2e; /* dark cards on charcoal */
+  --color-ink: #1d1d1f; /* primary text */
+  --color-stone: #6e6e73; /* secondary text — Apple grey (AA on white/ivory) */
+  --color-accent: #0071e3; /* Apple blue — fills & CTAs (white text passes AA) */
+  --color-accent-hover: #0077ed; /* blue hover */
+  --color-accent-soft: #2997ff; /* blue for dark backgrounds */
+  --color-accent-text: #0066cc; /* link blue for small text on light bg */
+  --color-label: #b64400; /* Apple orange — eyebrow / "NEW" labels (AA on white) */
+  --color-line: #d2d2d7; /* hairlines on light */
+  --color-line-dark: #424245; /* hairlines on dark */
 
-  /* Typography */
-  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, -apple-system,
-    "Segoe UI", sans-serif;
+  /* Typography — Inter tracks SF Pro closely; real SF on Apple devices */
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont,
+    "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
   /* Motion */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
-  /* Radii */
-  --radius-card: 1.25rem;
-  --radius-tile: 1rem;
+  /* Radii — Apple tile geometry */
+  --radius-card: 1.75rem; /* 28px large tiles */
+  --radius-tile: 1.125rem; /* 18px standard tiles */
 
-  /* Shadows — soft, warm, barely there */
-  --shadow-card: 0 1px 2px rgb(35 33 30 / 0.04), 0 8px 24px rgb(35 33 30 / 0.06);
-  --shadow-card-hover: 0 2px 4px rgb(35 33 30 / 0.05),
-    0 16px 40px rgb(35 33 30 / 0.1);
-  --shadow-nav: 0 1px 0 rgb(35 33 30 / 0.04), 0 8px 32px rgb(35 33 30 / 0.06);
+  /* Shadows — Apple cards are effectively flat */
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.04);
+  --shadow-card-hover: 0 2px 6px rgb(0 0 0 / 0.06), 0 8px 24px rgb(0 0 0 / 0.07);
+  --shadow-nav: 0 1px 0 rgb(0 0 0 / 0.06);
 }
 
 /* ---------- base ---------- */
@@ -63,13 +66,13 @@ body {
 }
 
 ::selection {
-  background: var(--color-gold);
+  background: var(--color-accent);
   color: #fff;
 }
 
 /* Accessible focus ring */
 :focus-visible {
-  outline: 2px solid var(--color-gold);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -77,17 +80,17 @@ body {
 /* ---------- typography helpers ---------- */
 
 .display {
-  letter-spacing: -0.035em;
-  line-height: 1.02;
+  letter-spacing: -0.019em; /* Apple headline tracking */
+  line-height: 1.07;
   font-weight: 600;
 }
 
 .eyebrow {
   font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--color-gold-text);
+  color: var(--color-label);
 }
 
 .text-balance {
@@ -100,14 +103,9 @@ body {
   border-color: var(--color-line);
 }
 
-/* Subtle grain for large flat areas (premium feel, ~invisible) */
+/* Legacy grain overlay — disabled for the flat Apple aesthetic. */
 .grain::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  content: none;
 }
 
 /* Marquee for trusted-by logos */

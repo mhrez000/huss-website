@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/ui/reveal";
 
 /**
- * Standard section header: gold eyebrow + large display heading + optional intro.
+ * Standard section header: label eyebrow + large display heading + optional intro.
  * `tone="dark"` for use on charcoal sections.
  */
 export function SectionHeading({
@@ -29,7 +29,7 @@ export function SectionHeading({
       )}
     >
       {eyebrow && (
-        <p className={cn("eyebrow mb-4", tone === "dark" && "!text-gold-soft")}>
+        <p className={cn("eyebrow mb-4", tone === "dark" && "!text-accent-soft")}>
           {eyebrow}
         </p>
       )}
