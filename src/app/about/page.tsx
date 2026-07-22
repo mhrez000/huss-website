@@ -29,7 +29,7 @@ const approach = [
   {
     icon: Zap,
     title: "Speed",
-    text: "Campaigns move fast, so HussMedia moves faster: confirmed bookings, on-time arrivals and galleries delivered the next morning — 98% of the time by 9am.",
+    text: "Campaigns move fast, so LuxeVisuals moves faster: confirmed bookings, on-time arrivals and galleries delivered the next morning — 98% of the time by 9am.",
   },
   {
     icon: Handshake,
@@ -106,12 +106,12 @@ export default function AboutPage() {
       <section className="bg-cream pt-28 pb-24 sm:pt-36 sm:pb-32">
         <Container>
           <Reveal className="max-w-3xl">
-            <p className="eyebrow mb-4">About HussMedia</p>
+            <p className="eyebrow mb-4">About LuxeVisuals</p>
             <h1 className="display text-balance text-4xl text-ink sm:text-5xl lg:text-6xl">
               The photographer Melbourne agents keep on speed dial
             </h1>
             <p className="mt-6 text-lg leading-relaxed text-stone">
-              HussMedia is the studio behind more than 2,500 Melbourne listings —
+              LuxeVisuals is the studio behind more than 2,500 Melbourne listings —
               founded and run by Huss, a photographer who believes every home
               deserves a magazine cover and every agent deserves a photographer
               they never have to chase.
@@ -138,7 +138,7 @@ export default function AboutPage() {
                   Huss picked up his first camera more than eight years ago and
                   never put it down. What began as a favour for one agent —
                   &quot;can you make this townhouse look as good as it feels?&quot;
-                  — became HussMedia: a studio that has now photographed over
+                  — became LuxeVisuals: a studio that has now photographed over
                   2,500 properties across Melbourne.
                 </p>
                 <p>
@@ -156,7 +156,7 @@ export default function AboutPage() {
                   considered as their first.
                 </p>
                 <p>
-                  Today HussMedia works with more than 350 agents across the
+                  Today LuxeVisuals works with more than 350 agents across the
                   city — but it still operates the way it started: one
                   photographer who answers his own phone, turns up on time and
                   treats every campaign like his own.

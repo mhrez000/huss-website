@@ -21,7 +21,7 @@ export function TrustedBy() {
       <div
         role="marquee"
         tabIndex={0}
-        aria-label="Agencies that trust HussMedia"
+        aria-label="Agencies that trust LuxeVisuals"
         className="group relative mt-8 overflow-hidden"
       >
         <div

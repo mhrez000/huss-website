@@ -128,7 +128,7 @@ export function BeforeAfter() {
                   exit={{ opacity: 0 }}
                   transition={{ duration: reduce ? 0 : 0.45 }}
                 >
-                  {/* After — the finished HussMedia edit */}
+                  {/* After — the finished LuxeVisuals edit */}
                   <Image
                     src={active.image}
                     alt={`${active.title} — professionally edited property photo`}

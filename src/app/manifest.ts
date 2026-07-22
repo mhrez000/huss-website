@@ -5,8 +5,8 @@ import { site } from "@/content/site";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "HussMedia — Real Estate Photography",
-    short_name: "HussMedia",
+    name: "LuxeVisuals — Real Estate Photography",
+    short_name: "LuxeVisuals",
     description: site.description,
     theme_color: "#1d1d1f",
     background_color: "#ffffff",

@@ -1,5 +1,5 @@
 /* ===========================================================
-   HussMedia — site content (single source of truth)
+   LuxeVisuals — site content (single source of truth)
    -----------------------------------------------------------
    This file is the "CMS". Every headline, price, FAQ,
    testimonial and image on the site is edited here.
@@ -7,13 +7,13 @@
    =========================================================== */
 
 export const site = {
-  name: "HussMedia",
-  legalName: "HussMedia Pty Ltd",
+  name: "LuxeVisuals",
+  legalName: "LuxeVisuals Pty Ltd",
   tagline: "Photography that helps homes sell faster",
   description:
     "Professional residential real estate photography in Melbourne. HDR photography, drone, twilight, floor plans and video — delivered within 24 hours.",
-  url: "https://hussmedia.com",
-  email: "hello@hussmedia.com",
+  url: "https://luxevisuals.com",
+  email: "hello@luxevisuals.com",
   phone: "+61 3 9000 0000",
   phoneDisplay: "(03) 9000 0000",
   location: "Melbourne, Australia",
@@ -26,9 +26,9 @@ export const site = {
   googleRating: 5.0,
   googleReviewCount: 132,
   socials: [
-    { label: "Instagram", href: "https://instagram.com/hussmedia" },
-    { label: "YouTube", href: "https://youtube.com/@hussmedia" },
-    { label: "LinkedIn", href: "https://linkedin.com/company/hussmedia" },
+    { label: "Instagram", href: "https://instagram.com/luxevisuals" },
+    { label: "YouTube", href: "https://youtube.com/@luxevisuals" },
+    { label: "LinkedIn", href: "https://linkedin.com/company/luxevisuals" },
   ],
 };
 
@@ -60,7 +60,7 @@ export const hero = {
 };
 
 /* ---------- image pool (curated Unsplash placeholders) ----------
-   Swap these for real HussMedia photography as it becomes available. */
+   Swap these for real LuxeVisuals photography as it becomes available. */
 
 const u = (id: string, w = 1600) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80`;
@@ -191,7 +191,7 @@ export const services: Service[] = [
     heroImage: IMG.livingWarm,
     heroAlt: "Bright, professionally photographed living room interior",
     description: [
-      "Great listing photography isn't about an expensive camera — it's about light, composition and consistency. Every HussMedia shoot is planned around the property's best angles and the best natural light, then hand-edited so whites are clean, windows show the view, and every room feels as generous as it does in person.",
+      "Great listing photography isn't about an expensive camera — it's about light, composition and consistency. Every LuxeVisuals shoot is planned around the property's best angles and the best natural light, then hand-edited so whites are clean, windows show the view, and every room feels as generous as it does in person.",
       "Agents receive a consistent, on-brand gallery for every listing — vertical and horizontal crops included — sized and optimised for realestate.com.au, Domain and print.",
     ],
     benefits: [
@@ -232,7 +232,7 @@ export const services: Service[] = [
     heroAlt: "Aerial drone view of residential neighbourhood",
     description: [
       "Some properties simply can't be told from the ground. Aerial photography captures the full block, the position on the street, proximity to parks, schools and water — the context that makes buyers commit to an inspection.",
-      "HussMedia operates CASA-compliant drones with licensed pilots, full insurance, and airspace approval handled for every shoot. You get cinematic, magazine-grade aerials without any of the compliance headache.",
+      "LuxeVisuals operates CASA-compliant drones with licensed pilots, full insurance, and airspace approval handled for every shoot. You get cinematic, magazine-grade aerials without any of the compliance headache.",
     ],
     benefits: [
       { title: "CASA-licensed & insured", text: "Fully compliant operations with airspace clearance arranged for you." },
@@ -550,7 +550,7 @@ export const portfolio: PortfolioItem[] = [
    frame until real before/after pairs are supplied. */
 
 export const beforeAfter = {
-  eyebrow: "The HussMedia edit",
+  eyebrow: "The LuxeVisuals edit",
   heading: "Every image, finished by hand",
   intro:
     "Drag the slider to see the difference professional editing makes. Sky replacement, grass enhancement, window views, colour correction — this is why our listings stop the scroll.",
@@ -604,7 +604,7 @@ export const bookingProcess = {
 /* ---------- why agents choose us ---------- */
 
 export const whyUs = {
-  eyebrow: "Why HussMedia",
+  eyebrow: "Why LuxeVisuals",
   heading: "Built around the way agents actually work",
   items: [
     { icon: "Zap", title: "Fast turnaround", text: "Photos next morning, video in 48 hours. Campaigns never wait on us." },
@@ -625,7 +625,7 @@ export const whyUs = {
 export const testimonials = [
   {
     quote:
-      "Our auction campaigns changed the day we switched to HussMedia. The twilight shots alone have buyers arriving emotionally sold before the open.",
+      "Our auction campaigns changed the day we switched to LuxeVisuals. The twilight shots alone have buyers arriving emotionally sold before the open.",
     name: "Sarah Mitchell",
     role: "Director",
     agency: "Bayside Estate Agents",
@@ -643,7 +643,7 @@ export const testimonials = [
   },
   {
     quote:
-      "Vendors notice the difference at listing presentations. Showing HussMedia photography next to competitors' has genuinely won me campaigns.",
+      "Vendors notice the difference at listing presentations. Showing LuxeVisuals photography next to competitors' has genuinely won me campaigns.",
     name: "Amelia Rossi",
     role: "Sales Agent",
     agency: "Harper & Finch",
@@ -829,6 +829,6 @@ export const bookingOptions = {
 
 export const finalCta = {
   heading: "Ready to make your next listing stand out?",
-  text: "Join 350+ Melbourne agents who trust HussMedia with their campaigns. Book online in under two minutes.",
+  text: "Join 350+ Melbourne agents who trust LuxeVisuals with their campaigns. Book online in under two minutes.",
   cta: { label: "Book Your Next Shoot Today", href: "/book" },
 };

@@ -1,5 +1,5 @@
 /* ===========================================================
-   HussMedia — blog content
+   LuxeVisuals — blog content
    Each post is structured data (no MDX dependency) so it can
    be edited like a CMS and rendered with full control.
    =========================================================== */

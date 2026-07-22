@@ -5,7 +5,7 @@ import { Icon } from "@/components/ui/icon";
 import { whyUs } from "@/content/site";
 
 /**
- * "Why HussMedia" — ten quiet, confident reasons in minimal icon tiles.
+ * "Why LuxeVisuals" — ten quiet, confident reasons in minimal icon tiles.
  * 2 rows of 5 on desktop, 2-up on small screens.
  */
 export function WhyUs() {

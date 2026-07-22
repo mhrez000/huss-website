@@ -10,11 +10,11 @@ import { Button } from "@/components/ui/button";
 export const metadata: Metadata = {
   title: "Blog",
   description:
-    "Marketing intelligence for real estate agents — photography, portals, vendor psychology and campaign strategy from HussMedia in Melbourne.",
+    "Marketing intelligence for real estate agents — photography, portals, vendor psychology and campaign strategy from LuxeVisuals in Melbourne.",
   openGraph: {
     title: "Blog",
     description:
-      "Marketing intelligence for real estate agents — photography, portals, vendor psychology and campaign strategy from HussMedia in Melbourne.",
+      "Marketing intelligence for real estate agents — photography, portals, vendor psychology and campaign strategy from LuxeVisuals in Melbourne.",
     images: [posts[0]?.cover ?? "/hero-poster.jpg"],
   },
 };

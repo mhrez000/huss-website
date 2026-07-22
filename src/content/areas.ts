@@ -1,5 +1,5 @@
 /* ===========================================================
-   HussMedia — service areas (suburb pages)
+   LuxeVisuals — service areas (suburb pages)
    Each area gets a dedicated SEO page with unique content.
    =========================================================== */
 
@@ -76,7 +76,7 @@ export const areas: Area[] = [
     ],
     testimonial: {
       quote:
-        "On St Georges Road the photography is the listing presentation. HussMedia's twilight and interior work has helped us secure three prestige appointments this year alone.",
+        "On St Georges Road the photography is the listing presentation. LuxeVisuals's twilight and interior work has helped us secure three prestige appointments this year alone.",
       name: "Charlotte Beaumont",
       role: "Prestige Sales Director",
       agency: "Fifth Avenue Property",
@@ -131,7 +131,7 @@ export const areas: Area[] = [
     ],
     testimonial: {
       quote:
-        "We list everything from deco one-bedders to $4m terraces in South Yarra, and HussMedia nails the brief on both. The dusk balcony shots consistently double our click-throughs.",
+        "We list everything from deco one-bedders to $4m terraces in South Yarra, and LuxeVisuals nails the brief on both. The dusk balcony shots consistently double our click-throughs.",
       name: "Oliver Tan",
       role: "Senior Sales Agent",
       agency: "Boutique Property Co.",
@@ -186,7 +186,7 @@ export const areas: Area[] = [
     ],
     testimonial: {
       quote:
-        "Our Golden Mile twilights from HussMedia have become a signature for the office. Vendors ask for 'those dusk photos' by name before we've even pitched the campaign.",
+        "Our Golden Mile twilights from LuxeVisuals have become a signature for the office. Vendors ask for 'those dusk photos' by name before we've even pitched the campaign.",
       name: "Sophie Kalogeropoulos",
       role: "Partner",
       agency: "Bayside Estate Agents",
@@ -241,7 +241,7 @@ export const areas: Area[] = [
     ],
     testimonial: {
       quote:
-        "Hawthorn buyers scrutinise everything, and HussMedia's galleries survive that scrutiny. The way they sequence heritage front to modern rear has genuinely lifted our open numbers.",
+        "Hawthorn buyers scrutinise everything, and LuxeVisuals's galleries survive that scrutiny. The way they sequence heritage front to modern rear has genuinely lifted our open numbers.",
       name: "Edward Fairbrother",
       role: "Auctioneer & Director",
       agency: "Harper & Finch",
@@ -461,7 +461,7 @@ export const areas: Area[] = [
     ],
     testimonial: {
       quote:
-        "A Shanghai-based buyer purchased our Balwyn North listing after the video walkthrough and floor plan alone. That's what complete media from HussMedia makes possible.",
+        "A Shanghai-based buyer purchased our Balwyn North listing after the video walkthrough and floor plan alone. That's what complete media from LuxeVisuals makes possible.",
       name: "Grace Liu",
       role: "Sales Agent",
       agency: "Harper & Finch",
@@ -516,7 +516,7 @@ export const areas: Area[] = [
     ],
     testimonial: {
       quote:
-        "Our last original-condition listing drew seven bidders because the aerial made the block impossible to ignore. HussMedia understands exactly what sells in Glen Waverley.",
+        "Our last original-condition listing drew seven bidders because the aerial made the block impossible to ignore. LuxeVisuals understands exactly what sells in Glen Waverley.",
       name: "Kevin Zhang",
       role: "Auctioneer & Partner",
       agency: "Summit Realty",
@@ -626,7 +626,7 @@ export const areas: Area[] = [
     ],
     testimonial: {
       quote:
-        "Two other photographers told us drone shots were impossible because of the airport. HussMedia had the approval sorted within days — and the aerials made the campaign.",
+        "Two other photographers told us drone shots were impossible because of the airport. LuxeVisuals had the approval sorted within days — and the aerials made the campaign.",
       name: "Frank Caruana",
       role: "Director",
       agency: "Northside Property Group",

@@ -115,7 +115,7 @@ export function SiteNav() {
               overHero ? "text-white" : "text-ink"
             )}
           >
-            Huss<span className="text-accent">Media</span>
+            Luxe<span className="text-accent">Visuals</span>
           </Link>
 
           {/* Desktop links */}

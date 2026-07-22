@@ -18,7 +18,7 @@ export type SendResult =
   | { sent: false; skipped: true; error?: never; warning?: never }
   | { sent: false; skipped?: never; error: string; warning?: never };
 
-const FROM = () => process.env.EMAIL_FROM || "HussMedia <onboarding@resend.dev>";
+const FROM = () => process.env.EMAIL_FROM || "LuxeVisuals <onboarding@resend.dev>";
 const ADMIN_TO = () => process.env.BOOKING_NOTIFY_EMAIL || site.email;
 
 /* ---------- calendar helpers ---------- */
@@ -124,7 +124,7 @@ export function buildBookingIcs(booking: BookingInput): string {
     .toISOString()
     .replace(/[-:]/g, "")
     .replace(/\.\d{3}/, "");
-  const uid = `booking-${Date.now()}-${Math.random().toString(36).slice(2, 10)}@hussmedia.com`;
+  const uid = `booking-${Date.now()}-${Math.random().toString(36).slice(2, 10)}@luxevisuals.com`;
   const description = [
     `Real estate photography shoot with ${site.name}.`,
     `Services: ${booking.services.join(", ")}`,
@@ -136,7 +136,7 @@ export function buildBookingIcs(booking: BookingInput): string {
   return [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//HussMedia//Booking//EN",
+    "PRODID:-//LuxeVisuals//Booking//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",
@@ -221,7 +221,7 @@ function bookingCustomerHtml(booking: BookingInput, calendarUrl: string) {
           <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
             <tr>
               <td style="background:${COLOR.charcoal};border-radius:20px 20px 0 0;padding:28px 36px;">
-                <p style="margin:0;font-size:20px;font-weight:800;letter-spacing:-0.02em;color:${COLOR.cream};">Huss<span style="color:${COLOR.accentSoft};">Media</span></p>
+                <p style="margin:0;font-size:20px;font-weight:800;letter-spacing:-0.02em;color:${COLOR.cream};">Luxe<span style="color:${COLOR.accentSoft};">Visuals</span></p>
               </td>
             </tr>
             <tr>
@@ -383,7 +383,7 @@ export async function sendBookingEmails(booking: BookingInput): Promise<SendResu
       html: bookingCustomerHtml(booking, calendarUrl),
       attachments: [
         {
-          filename: "hussmedia-shoot.ics",
+          filename: "luxevisuals-shoot.ics",
           content: Buffer.from(ics).toString("base64"),
         },
       ],
@@ -448,7 +448,7 @@ export async function sendContactEmails(data: ContactInput): Promise<SendResult>
           <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#ffffff;border:1px solid ${COLOR.line};border-radius:20px;">
             <tr>
               <td style="padding:32px 36px;">
-                <p style="margin:0;font-size:18px;font-weight:800;letter-spacing:-0.02em;color:${COLOR.ink};">Huss<span style="color:${COLOR.accent};">Media</span></p>
+                <p style="margin:0;font-size:18px;font-weight:800;letter-spacing:-0.02em;color:${COLOR.ink};">Luxe<span style="color:${COLOR.accent};">Visuals</span></p>
                 <p style="margin:18px 0 0;font-size:15px;line-height:1.7;color:${COLOR.ink};">Hi ${escapeHtml(data.name)},</p>
                 <p style="margin:12px 0 0;font-size:14px;line-height:1.7;color:${COLOR.stone};">Thanks for getting in touch — your message has landed and a real person will reply within business hours, usually within the hour.</p>
                 <p style="margin:12px 0 0;font-size:14px;line-height:1.7;color:${COLOR.stone};">If it's urgent, call us on <a href="tel:${site.phone.replace(/\s/g, "")}" style="color:${COLOR.accent};font-weight:700;text-decoration:none;">${site.phoneDisplay}</a>.</p>

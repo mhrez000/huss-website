@@ -11,7 +11,7 @@ export function SiteFooter() {
         {/* CTA band */}
         <div className="flex flex-col items-start justify-between gap-8 border-b border-line-dark py-16 lg:flex-row lg:items-center">
           <div>
-            <p className="eyebrow mb-3 !text-accent-soft">HussMedia</p>
+            <p className="eyebrow mb-3 !text-accent-soft">LuxeVisuals</p>
             <h2 className="display max-w-xl text-3xl text-cream sm:text-4xl">
               Your next listing deserves better photography.
             </h2>
@@ -25,7 +25,7 @@ export function SiteFooter() {
         <div className="grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <p className="text-lg font-extrabold tracking-tight">
-              Huss<span className="text-accent-soft">Media</span>
+              Luxe<span className="text-accent-soft">Visuals</span>
             </p>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-cream/60">
               {site.description}

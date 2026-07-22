@@ -11,11 +11,11 @@ import { ContactForm } from "@/components/forms/contact-form";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Talk to HussMedia about your next listing — phone, email or a quick enquiry form. Metro Melbourne coverage, no travel fees, replies within the hour.",
+    "Talk to LuxeVisuals about your next listing — phone, email or a quick enquiry form. Metro Melbourne coverage, no travel fees, replies within the hour.",
   openGraph: {
     title: "Contact",
     description:
-      "Talk to HussMedia about your next listing — phone, email or a quick enquiry form. Metro Melbourne coverage, no travel fees, replies within the hour.",
+      "Talk to LuxeVisuals about your next listing — phone, email or a quick enquiry form. Metro Melbourne coverage, no travel fees, replies within the hour.",
     images: [IMG.modernExterior],
   },
 };
@@ -172,7 +172,7 @@ export default function ContactPage() {
           <div className="overflow-hidden rounded-3xl border border-line shadow-[var(--shadow-card)]">
             <iframe
               src="https://www.google.com/maps?q=Melbourne%20VIC&output=embed&z=10"
-              title="HussMedia service area — Melbourne"
+              title="LuxeVisuals service area — Melbourne"
               className="h-[360px] w-full border-0"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"

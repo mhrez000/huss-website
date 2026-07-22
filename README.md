@@ -1,6 +1,6 @@
-# HussMedia — Residential Real Estate Photography
+# LuxeVisuals — Residential Real Estate Photography
 
-Premium, conversion-focused website for HussMedia, a residential real estate
+Premium, conversion-focused website for LuxeVisuals, a residential real estate
 photography business in Melbourne, Australia. Design language is aligned to
 the Apple Store: white/#f5f5f7 sections, #1d1d1f text, Apple-blue (#0071e3)
 CTAs, orange (#b64400) eyebrow labels, Inter/SF Pro typography, flat cards.
@@ -27,7 +27,7 @@ no code changes needed to update the site:
 | `src/content/areas.ts` | Suburb pages (unique SEO copy, local FAQs, galleries) |
 
 Images are curated Unsplash placeholders defined in the `IMG` pool in
-`src/content/site.ts` — swap them for real HussMedia photography by
+`src/content/site.ts` — swap them for real LuxeVisuals photography by
 replacing the URLs (drop files in `/public` and use `/filename.jpg`).
 
 The before/after sliders currently derive the "before" state from the same

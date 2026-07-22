@@ -29,7 +29,7 @@ const reassurance = [
   {
     icon: ShieldCheck,
     title: "Reshoot guarantee",
-    text: "If a shoot ever falls short of the HussMedia standard, it gets reshot at no cost. Simple as that.",
+    text: "If a shoot ever falls short of the LuxeVisuals standard, it gets reshot at no cost. Simple as that.",
   },
   {
     icon: Receipt,
