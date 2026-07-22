@@ -34,14 +34,39 @@ The before/after sliders currently derive the "before" state from the same
 image via CSS degradation as a placeholder — replace with real before/after
 pairs when available.
 
-## Booking & contact forms
+## Booking system (live availability)
 
-API routes: `src/app/api/book/route.ts` and `src/app/api/contact/route.ts`.
+Users pick from the photographer's genuinely free time slots; a chosen
+slot is reserved atomically so double-booking is impossible.
 
-- With `RESEND_API_KEY` set (see `.env.example`), submissions send an
-  admin notification and a customer confirmation email (with calendar invite).
+- **Rules** live in `bookingConfig` in `src/content/site.ts`: bookable
+  start times per weekday, twilight sessions (seasonal dusk table),
+  minimum notice (12h), booking horizon (60 days), and `blockedDates`
+  for holidays/leave — all edited like any other content.
+- **Engine**: `src/lib/availability.ts` (pure, Melbourne-timezone/DST
+  aware — helpers in `src/lib/melbourne-time.ts`).
+- **API**: `GET /api/availability?from&to` returns free slots;
+  `POST /api/book` re-validates the slot and inserts it — a lost race
+  returns 409 and the UI refreshes availability.
+- **Storage** (`src/lib/bookings-store.ts`), selected by env:
+  - `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` set → Supabase
+    Postgres. Run `supabase/bookings.sql` once in the SQL editor; a
+    partial unique index on `slot_start` guarantees no double-booking.
+    Cancelling: set a row's `status` to `cancelled` (frees the slot).
+  - Otherwise → local `.data/bookings.json` (dev only; serverless
+    filesystems are ephemeral).
+- **Static demo** (GitHub Pages, `NEXT_PUBLIC_DEMO=1`): no API exists,
+  so the picker computes a deterministic pseudo-random diary client-side
+  and submissions simulate success with a "demo preview" note.
+
+## Booking & contact emails
+
+- With `RESEND_API_KEY` set (see `.env.example`), bookings send an admin
+  notification plus a customer confirmation with the exact reserved slot,
+  an `.ics` invite and a Google Calendar link.
 - Without it, submissions are logged to the server console and the form
-  still confirms — safe for local development.
+  still confirms — safe for local development. Email failure never loses
+  a booking: the slot is persisted before any email is attempted.
 
 ## SEO
 
@@ -53,4 +78,6 @@ API routes: `src/app/api/book/route.ts` and `src/app/api/contact/route.ts`.
 ## Deploying
 
 Standard Next.js — deploys to Vercel with zero config. Set the env vars
-from `.env.example` in the Vercel dashboard for live email delivery.
+from `.env.example` in the Vercel dashboard: Resend for email delivery,
+Supabase for persistent live availability (required in production —
+without it each serverless instance forgets bookings).

@@ -9,17 +9,10 @@ import { bookingOptions } from "@/content/site";
 /** AU-friendly phone: digits with optional +, spaces, () and dashes. */
 const AU_PHONE_RE = /^\+?[0-9][0-9\s().-]{6,18}[0-9]$/;
 
-const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+/** UTC ISO instant as produced by Date.prototype.toISOString(). */
+const UTC_ISO_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d{1,3})?)?Z$/;
 
-/** Today's date (YYYY-MM-DD) in Melbourne — safe on server and client. */
-export function melbourneToday(): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Australia/Melbourne",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date());
-}
+export { melbourneToday } from "@/lib/melbourne-time";
 
 /** bookingOptions arrays are plain string[]; zod enums need a tuple. */
 const asEnum = (values: string[], message: string) =>
@@ -49,21 +42,22 @@ export const bookingSchema = z.object({
     .min(8, "Please enter a valid phone number")
     .max(20, "Phone number is too long")
     .regex(AU_PHONE_RE, "Please enter a valid Australian phone number"),
-  preferredDate: z
-    .string("Please choose a date")
-    .regex(DATE_RE, "Please choose a date")
-    .refine(
-      (d) => d >= melbourneToday(),
-      "Please choose today or a future date"
-    ),
-  preferredTime: asEnum(bookingOptions.timeSlots, "Please choose a time slot"),
+  /**
+   * The selected slot's UTC start instant, set by the slot picker.
+   * The API re-validates it against the availability engine (rules,
+   * notice, horizon) and the store rejects taken slots atomically.
+   */
+  slotStart: z
+    .string("Please select an available time slot")
+    .regex(UTC_ISO_RE, "Please select an available time slot"),
   propertyType: asEnum(bookingOptions.propertyTypes, "Please select a property type"),
   bedrooms: asEnum(bookingOptions.bedrooms, "Please select bedrooms"),
   bathrooms: asEnum(bookingOptions.bathrooms, "Please select bathrooms"),
   propertySize: asEnum(bookingOptions.propertySizes, "Please select a property size"),
   services: z
-    .array(z.string())
-    .min(1, "Please select at least one service"),
+    .array(asEnum(bookingOptions.services, "Please choose valid services"))
+    .min(1, "Please select at least one service")
+    .max(bookingOptions.services.length),
   notes: z.string().max(2000, "Notes are limited to 2,000 characters").optional(),
   website: honeypot,
 });

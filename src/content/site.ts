@@ -809,7 +809,6 @@ export const extras = [
 
 export const bookingOptions = {
   propertyTypes: ["House", "Townhouse", "Apartment", "Unit", "Land / Acreage", "Other"],
-  timeSlots: ["Morning (8am – 11am)", "Midday (11am – 2pm)", "Afternoon (2pm – 5pm)", "Twilight (dusk)"],
   bedrooms: ["1", "2", "3", "4", "5", "6+"],
   bathrooms: ["1", "2", "3", "4+"],
   propertySizes: ["Small (< 200m²)", "Medium (200 – 400m²)", "Large (400 – 700m²)", "Very large (700m²+)"],
@@ -823,6 +822,48 @@ export const bookingOptions = {
     "Virtual staging",
     "Furniture removal",
   ],
+};
+
+/* ---------- availability rules (the photographer's diary) ----------
+   Edited here like everything else. Times are Melbourne wall-clock
+   "HH:MM" strings; weekdays are 0=Sunday … 6=Saturday. */
+
+export const bookingConfig = {
+  timeZone: "Australia/Melbourne",
+  /** On-site window per standard booking, minutes (incl. pack-up buffer). */
+  slotMinutes: 120,
+  /** Twilight session length, minutes. */
+  twilightSlotMinutes: 90,
+  /** Bookable start times per weekday. Empty array = day off. */
+  standardStarts: {
+    0: [] as string[], // Sunday — closed
+    1: ["08:00", "09:30", "11:00", "12:30", "14:00", "15:30"],
+    2: ["08:00", "09:30", "11:00", "12:30", "14:00", "15:30"],
+    3: ["08:00", "09:30", "11:00", "12:30", "14:00", "15:30"],
+    4: ["08:00", "09:30", "11:00", "12:30", "14:00", "15:30"],
+    5: ["08:00", "09:30", "11:00", "12:30", "14:00", "15:30"],
+    6: ["08:00", "09:30", "11:00", "12:30", "14:00"], // Saturday
+  } as Record<number, string[]>,
+  /** Weekdays offering a twilight session (starts ~30min before dusk). */
+  twilightDays: [1, 2, 3, 4, 5, 6],
+  /**
+   * Approximate Melbourne dusk in minutes from midnight, by month (1–12),
+   * expressed in STANDARD time (AEST). The availability engine adds the
+   * DST hour (+60) for dates that fall in daylight saving (AEDT), so the
+   * table stays correct across the DST changeovers within a month.
+   * Twilight slots start 30 minutes before these times.
+   */
+  duskMinutes: {
+    1: 19 * 60 + 45, 2: 19 * 60 + 15, 3: 18 * 60 + 30, 4: 17 * 60 + 50,
+    5: 17 * 60 + 20, 6: 17 * 60 + 5, 7: 17 * 60 + 20, 8: 17 * 60 + 50,
+    9: 18 * 60 + 15, 10: 18 * 60 + 50, 11: 19 * 60 + 15, 12: 19 * 60 + 40,
+  } as Record<number, number>,
+  /** Bookings must be made at least this many hours ahead. */
+  minNoticeHours: 12,
+  /** How far ahead the diary opens, in days. */
+  horizonDays: 60,
+  /** Whole days off (public holidays, leave) — "YYYY-MM-DD". */
+  blockedDates: [] as string[],
 };
 
 /* ---------- final CTA ---------- */

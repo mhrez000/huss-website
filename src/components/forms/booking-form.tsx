@@ -1,17 +1,21 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { useForm, type FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { CheckCircle, Loader2, CalendarPlus } from "lucide-react";
-import {
-  bookingSchema,
-  melbourneToday,
-  type BookingInput,
-} from "@/lib/booking-schema";
+import { bookingSchema, type BookingInput } from "@/lib/booking-schema";
 import { bookingOptions, site } from "@/content/site";
+import type { Slot } from "@/lib/availability";
+import {
+  MELBOURNE_TZ,
+  formatMelDateLong,
+  gcalLocalStamp,
+  melDateOf,
+} from "@/lib/melbourne-time";
+import { SlotPicker } from "@/components/booking/slot-picker";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -29,18 +33,35 @@ import { cn } from "@/lib/utils";
 type SubmitState =
   | { status: "idle" }
   | { status: "error"; message: string }
-  | { status: "success"; calendarUrl: string };
-
-const emptySubscribe = () => () => {};
+  | {
+      status: "success";
+      calendarUrl: string;
+      slot: Slot | null;
+      /** false ⇢ the booking saved but the confirmation email didn't send. */
+      emailSent: boolean;
+    };
 
 /**
- * Melbourne-today (YYYY-MM-DD), computed on the CLIENT after hydration.
- * The /book page is statically rendered, so baking the date in at build
- * time goes stale; the server snapshot is "" (no min attribute) and the
- * client snapshot is today. Server-side zod remains the real guard.
+ * Demo-mode Google Calendar link, built client-side so the static
+ * (GitHub Pages) preview offers the complete experience without an API.
+ * Wall-clock stamps + ctz pin the event to Melbourne time.
  */
-function useMelbourneToday(): string {
-  return useSyncExternalStore(emptySubscribe, melbourneToday, () => "");
+function demoCalendarUrl(slot: Slot, values: BookingInput): string {
+  const text = encodeURIComponent(
+    `LuxeVisuals photo shoot — ${values.propertyAddress}`
+  );
+  const details = encodeURIComponent(
+    "Professional real estate photography with LuxeVisuals."
+  );
+  const location = encodeURIComponent(values.propertyAddress);
+  return (
+    "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+    `&text=${text}` +
+    `&dates=${gcalLocalStamp(slot.start)}/${gcalLocalStamp(slot.end)}` +
+    `&ctz=${MELBOURNE_TZ}` +
+    `&location=${location}` +
+    `&details=${details}`
+  );
 }
 
 /** Numbered group heading inside the booking card. */
@@ -57,11 +78,25 @@ function GroupHeading({ step, title }: { step: string; title: string }) {
 
 export function BookingForm() {
   const [state, setState] = useState<SubmitState>({ status: "idle" });
-  const minDate = useMelbourneToday();
+  /** Full Slot object for display — the form itself only stores slotStart. */
+  const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
+  /** Bumped after a 409/stale-slot 422 so the picker reloads availability. */
+  const [refreshToken, setRefreshToken] = useState(0);
+  const reducedMotion = useReducedMotion();
+
+  /* The success panel replaces the form wholesale — hand focus to its
+     heading so keyboard/AT users aren't dropped at the top of the page. */
+  const successHeadingRef = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    if (state.status === "success") {
+      successHeadingRef.current?.focus();
+    }
+  }, [state.status]);
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<BookingInput>({
     resolver: zodResolver(bookingSchema),
@@ -71,8 +106,7 @@ export function BookingForm() {
       agency: "",
       email: "",
       phone: "",
-      preferredDate: "",
-      preferredTime: "" as BookingInput["preferredTime"],
+      slotStart: "",
       propertyType: "" as BookingInput["propertyType"],
       bedrooms: "" as BookingInput["bedrooms"],
       bathrooms: "" as BookingInput["bathrooms"],
@@ -85,12 +119,20 @@ export function BookingForm() {
 
   async function onSubmit(values: BookingInput) {
     setState({ status: "idle" });
+
     // Static demo hosting (GitHub Pages) has no API — simulate the flow.
+    // zod has already required a real slotStart, so a slot is selected.
     if (process.env.NEXT_PUBLIC_DEMO === "1") {
       await new Promise((r) => setTimeout(r, 700));
-      setState({ status: "success", calendarUrl: "" });
+      setState({
+        status: "success",
+        calendarUrl: selectedSlot ? demoCalendarUrl(selectedSlot, values) : "",
+        slot: selectedSlot,
+        emailSent: true, // demo keeps the standard copy
+      });
       return;
     }
+
     const fallbackMessage = `Something went wrong sending your booking — your details are still here. Please try again, or call us on ${site.phoneDisplay} and we'll organise it on the spot.`;
     try {
       const res = await fetch("/api/book", {
@@ -99,38 +141,150 @@ export function BookingForm() {
         body: JSON.stringify(values),
       });
       const data = (await res.json().catch(() => null)) as
-        | { ok?: boolean; calendarUrl?: string; message?: string }
+        | {
+            ok?: boolean;
+            calendarUrl?: string;
+            message?: string;
+            code?: string;
+            slot?: Slot;
+            emailSent?: boolean;
+            errors?: {
+              formErrors?: string[];
+              fieldErrors?: Record<string, string[] | undefined>;
+            };
+          }
         | null;
+
+      // Someone else took the slot between selection and submit.
+      if (res.status === 409) {
+        setState({
+          status: "error",
+          message:
+            "That time was just booked by someone else — please pick another slot.",
+        });
+        setSelectedSlot(null);
+        setValue("slotStart", "");
+        setRefreshToken((t) => t + 1);
+        return;
+      }
+
+      // Server-side validation rejected the payload (e.g. the selected slot
+      // went stale while the page sat open). Always show the server's own
+      // message; when it points at the slot, recover exactly like the 409
+      // branch so the dead slot can't be resubmitted.
+      if (res.status === 422) {
+        const formErrors = data?.errors?.formErrors;
+        const fieldErrors = data?.errors?.fieldErrors;
+        const hasFieldErrors =
+          !!fieldErrors && Object.keys(fieldErrors).length > 0;
+        const slotStale =
+          data?.code === "slot_stale" ||
+          !!fieldErrors?.slotStart ||
+          (!!formErrors?.length && !hasFieldErrors);
+        setState({
+          status: "error",
+          message: formErrors?.[0] ?? data?.message ?? fallbackMessage,
+        });
+        if (slotStale) {
+          setSelectedSlot(null);
+          setValue("slotStart", "");
+          setRefreshToken((t) => t + 1);
+        }
+        return;
+      }
+
       if (!res.ok || !data?.ok) {
         // e.g. 502 when email delivery failed — show the server's message
         // (call/email fallback) and keep the form data intact.
         setState({ status: "error", message: data?.message || fallbackMessage });
         return;
       }
-      setState({ status: "success", calendarUrl: data.calendarUrl ?? "" });
+
+      setState({
+        status: "success",
+        calendarUrl: data.calendarUrl ?? "",
+        // Prefer the server's canonical slot; fall back to the local one.
+        slot:
+          data.slot && typeof data.slot.start === "string"
+            ? data.slot
+            : selectedSlot,
+        // Only an explicit false downgrades the confirmation-email copy.
+        emailSent: data.emailSent !== false,
+      });
     } catch {
       setState({ status: "error", message: fallbackMessage });
     }
   }
 
+  /**
+   * zod blocks the submit, but slotStart lives in a hidden input that RHF
+   * can't focus — so a missing slot would otherwise be a silent dead click.
+   * Hand focus to the slot picker when it's the outstanding error.
+   */
+  function onInvalid(formErrors: FieldErrors<BookingInput>) {
+    if (!formErrors.slotStart) return;
+    // Run after RHF's own focus pass; only step in when focus didn't land
+    // on a visible invalid control (i.e. the hidden input was first in line).
+    requestAnimationFrame(() => {
+      const active = document.activeElement;
+      if (
+        active instanceof HTMLElement &&
+        active !== document.body &&
+        active.matches("input:not([type=hidden]), select, textarea")
+      ) {
+        return;
+      }
+      const picker = document.getElementById("slot-picker");
+      picker?.scrollIntoView({
+        block: "center",
+        behavior: reducedMotion ? "auto" : "smooth",
+      });
+      picker?.focus({ preventScroll: true });
+    });
+  }
+
   /* ---------- success panel ---------- */
 
   if (state.status === "success") {
+    const slotDate = state.slot ? melDateOf(Date.parse(state.slot.start)) : null;
     return (
       <motion.div
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 0, y: reducedMotion ? 0 : 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="rounded-3xl border border-line bg-surface p-8 text-center shadow-[var(--shadow-card)] sm:p-12"
       >
         <CheckCircle className="mx-auto size-14 text-accent" aria-hidden />
-        <h2 className="display mt-6 text-balance text-3xl text-ink sm:text-4xl">
-          Booking request received
+        <h2
+          ref={successHeadingRef}
+          tabIndex={-1}
+          className="display mt-6 text-balance text-3xl text-ink sm:text-4xl"
+        >
+          Booking confirmed
         </h2>
         <p className="mx-auto mt-4 max-w-md leading-relaxed text-stone">
-          A confirmation email with your booking summary is on its way to your
-          inbox. We&apos;ll confirm your shoot time within business hours —
-          usually within the hour.
+          {state.slot && slotDate ? (
+            <>
+              Your shoot is locked in for{" "}
+              <span className="font-semibold text-ink">
+                {formatMelDateLong(slotDate)}, {state.slot.label}
+              </span>{" "}
+              (Melbourne time).{" "}
+              {state.emailSent
+                ? "A confirmation email with the details is on its way to your inbox."
+                : `If a confirmation email doesn't arrive shortly, call us on ${site.phoneDisplay}.`}
+            </>
+          ) : state.emailSent ? (
+            <>
+              Your slot is reserved. A confirmation email with the details is
+              on its way to your inbox.
+            </>
+          ) : (
+            <>
+              Your slot is locked in. If a confirmation email doesn&apos;t
+              arrive shortly, call us on {site.phoneDisplay}.
+            </>
+          )}
         </p>
         {process.env.NEXT_PUBLIC_DEMO === "1" && (
           <p className="mx-auto mt-3 max-w-md text-xs text-stone">
@@ -165,7 +319,7 @@ export function BookingForm() {
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(onSubmit, onInvalid)}
       noValidate
       className="relative rounded-3xl border border-line bg-surface p-6 shadow-[var(--shadow-card)] sm:p-8"
     >
@@ -359,49 +513,20 @@ export function BookingForm() {
           </div>
         </section>
 
-        {/* 3 — Schedule */}
+        {/* 3 — Schedule (live availability) */}
         <section className="border-t border-line pt-8">
           <GroupHeading step="3" title="Schedule" />
-          <div className="grid gap-5 sm:grid-cols-2">
-            <Field
-              label="Preferred date"
-              htmlFor="preferredDate"
-              required
-              error={errors.preferredDate?.message}
-            >
-              <input
-                type="date"
-                min={minDate || undefined}
-                className={inputStyles}
-                {...fieldAria("preferredDate", errors.preferredDate?.message, true)}
-                {...register("preferredDate")}
-              />
-            </Field>
-
-            <Field
-              label="Preferred time"
-              htmlFor="preferredTime"
-              required
-              error={errors.preferredTime?.message}
-            >
-              <SelectShell>
-                <select
-                  className={selectStyles}
-                  {...fieldAria("preferredTime", errors.preferredTime?.message, true)}
-                  {...register("preferredTime")}
-                >
-                  <option value="" disabled>
-                    Select a time slot
-                  </option>
-                  {bookingOptions.timeSlots.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
-                    </option>
-                  ))}
-                </select>
-              </SelectShell>
-            </Field>
-          </div>
+          {/* slotStart stays registered so zod validates the selection. */}
+          <input type="hidden" {...register("slotStart")} />
+          <SlotPicker
+            value={selectedSlot}
+            onSelect={(slot) => {
+              setSelectedSlot(slot);
+              setValue("slotStart", slot.start, { shouldValidate: true });
+            }}
+            refreshToken={refreshToken}
+            error={errors.slotStart?.message}
+          />
         </section>
 
         {/* 4 — Services */}
@@ -482,15 +607,15 @@ export function BookingForm() {
             {isSubmitting ? (
               <>
                 <Loader2 className="size-5 animate-spin" aria-hidden />
-                Sending your request…
+                Confirming your booking…
               </>
             ) : (
-              "Confirm booking request"
+              "Confirm booking"
             )}
           </Button>
           <p className="mt-4 text-center text-sm text-stone">
-            No payment taken now — we confirm availability within business
-            hours.
+            No payment taken now — your time is reserved the moment you
+            confirm.
           </p>
         </div>
       </div>

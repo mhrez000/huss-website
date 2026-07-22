@@ -18,19 +18,19 @@ import { BookingForm } from "@/components/forms/booking-form";
 export const metadata: Metadata = {
   title: "Book a Shoot",
   description:
-    "Book professional real estate photography in Melbourne in under two minutes. 24-hour delivery, weather-safe rescheduling and an instant booking summary.",
+    "Book professional real estate photography in Melbourne in under two minutes. 24-hour delivery, weather-safe rescheduling and live diary availability.",
   openGraph: {
     title: "Book a Shoot",
     description:
-      "Book professional real estate photography in Melbourne in under two minutes. 24-hour delivery, weather-safe rescheduling and an instant booking summary.",
+      "Book professional real estate photography in Melbourne in under two minutes. 24-hour delivery, weather-safe rescheduling and live diary availability.",
     images: [IMG.luxuryExteriorDusk],
   },
 };
 
 const nextSteps = [
   {
-    title: "Instant booking summary",
-    text: "Your request lands in our diary straight away and a summary email arrives in your inbox.",
+    title: "Pick a time that's actually free",
+    text: "The calendar shows our live diary — choose an open time and your slot is reserved on the spot.",
   },
   {
     title: "We lock in the details",
@@ -76,7 +76,7 @@ export default function BookPage() {
             <span className="text-accent" aria-hidden>
               •
             </span>
-            <span>Instant booking summary</span>
+            <span>Live availability</span>
           </p>
         </Reveal>
 
