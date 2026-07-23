@@ -114,7 +114,7 @@ function icsUtcStamp(iso: string): string {
 
 /** Hand-built .ics invite for the reserved slot (exact UTC instants). */
 export function buildBookingIcs(booking: BookingInput, slot: BookedSlot): string {
-  const uid = `booking-${Date.now()}-${Math.random().toString(36).slice(2, 10)}@luxevisuals.com`;
+  const uid = `booking-${Date.now()}-${Math.random().toString(36).slice(2, 10)}@luxevisuals.com.au`;
 
   return [
     "BEGIN:VCALENDAR",

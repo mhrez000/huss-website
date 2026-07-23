@@ -12,8 +12,8 @@ export const site = {
   tagline: "Photography that helps homes sell faster",
   description:
     "Professional residential real estate photography in Melbourne. HDR photography, drone, twilight, floor plans and video — delivered within 24 hours.",
-  url: "https://luxevisuals.com",
-  email: "hello@luxevisuals.com",
+  url: "https://luxevisuals.com.au",
+  email: "hello@luxevisuals.com.au",
   phone: "+61 3 9000 0000",
   phoneDisplay: "(03) 9000 0000",
   location: "Melbourne, Australia",
