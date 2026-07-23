@@ -5,6 +5,11 @@ import { bookingSchema } from "@/lib/booking-schema";
 import { getBookingStore } from "@/lib/bookings-store";
 import type { CreateResult, NewBooking } from "@/lib/bookings-store";
 import { buildGoogleCalendarUrl, sendBookingEmails } from "@/lib/email";
+import {
+  createBookingEvent,
+  gcalEnabled,
+  getGcalBusy,
+} from "@/lib/google-calendar";
 import { site } from "@/content/site";
 
 /* ===========================================================
@@ -15,8 +20,12 @@ import { site } from "@/content/site";
    3. Slot re-match     -> 422 (rules/notice/horizon enforced
       server-side; the client's slot list may be stale)
    4. Durable log line  -> BEFORE any side effect
-   5. Atomic insert     -> 409 slot_taken | 502 store outage
-   6. Emails            -> best-effort; the booking is already
+   5. Gcal free/busy    -> 409 slot_taken if the photographer's
+      own calendar blocks the slot (skipped when gcal disabled;
+      a FAILED check proceeds — never depend on Google uptime)
+   6. Atomic insert     -> 409 slot_taken | 502 store outage
+   7. Gcal event        -> best-effort; booking already persisted
+   8. Emails            -> best-effort; the booking is already
       persisted, so email failure never fails the response
    =========================================================== */
 
@@ -130,6 +139,40 @@ export async function POST(request: Request) {
     })
   );
 
+  // The photographer's own diary can also block the slot: a personal
+  // Google Calendar event added since the availability list was served.
+  // Re-check free/busy for exactly this window and refuse with the SAME
+  // 409 a store conflict produces. If the free/busy CHECK ITSELF fails,
+  // log a warning and PROCEED — booking availability must not depend on
+  // Google uptime; the photographer resolves rare clashes manually.
+  const gcal = gcalEnabled();
+  if (gcal) {
+    try {
+      const gcalBusy = await getGcalBusy(slot.start, slot.end);
+      const slotStartMs = Date.parse(slot.start);
+      const slotEndMs = Date.parse(slot.end);
+      const clash = gcalBusy.some(
+        (b) => Date.parse(b.start) < slotEndMs && slotStartMs < Date.parse(b.end)
+      );
+      if (clash) {
+        return NextResponse.json(
+          {
+            ok: false,
+            code: "slot_taken",
+            message:
+              "That time was just booked by someone else — please choose another slot.",
+          },
+          { status: 409 }
+        );
+      }
+    } catch (error) {
+      console.warn(
+        "[book] Google Calendar free/busy check failed — proceeding without it:",
+        error
+      );
+    }
+  }
+
   const store = getBookingStore();
   let created: CreateResult;
   try {
@@ -166,6 +209,46 @@ export async function POST(request: Request) {
     );
   }
 
+  // Two-way diary: push the confirmed booking into the photographer's
+  // Google Calendar. Best-effort — the booking is already persisted, so
+  // a calendar failure must NOT fail the response.
+  let gcalEventCreated = false;
+  if (gcal) {
+    try {
+      const event = await createBookingEvent({
+        ...booking,
+        bookingId: created.id,
+        slotStart: slot.start,
+        slotEnd: slot.end,
+        kind: slot.kind,
+      });
+      gcalEventCreated = true;
+      // Best-effort: remember the event id on the booking row so a future
+      // cancellation flow can find (and delete) the calendar event.
+      try {
+        await store.setGoogleEventId?.(created.id, event.id);
+      } catch (error) {
+        console.error(
+          `[book] booking ${created.id}: failed to store Google event id:`,
+          error
+        );
+      }
+      console.log(
+        JSON.stringify({
+          event: "booking_gcal_event",
+          bookingId: created.id,
+          gcalEventCreated: true,
+          gcalEventId: event.id,
+        })
+      );
+    } catch (error) {
+      console.error(
+        `[book] booking ${created.id} persisted but Google Calendar event failed:`,
+        error
+      );
+    }
+  }
+
   const calendarUrl = buildGoogleCalendarUrl(data, slot);
 
   // The booking is already persisted — email failure must NOT fail the
@@ -180,10 +263,13 @@ export async function POST(request: Request) {
 
   // emailSent: true ONLY when the send actually succeeded; false when it
   // was skipped (no RESEND_API_KEY) OR failed. The UI reads this field.
+  // gcalEvent is only present when the gcal integration is configured, so
+  // the response stays byte-identical when the integration is off.
   return NextResponse.json({
     ok: true,
     calendarUrl,
     emailSent: emails.sent === true,
     slot: { start: slot.start, end: slot.end, kind: slot.kind, label: slot.label },
+    ...(gcal ? { gcalEvent: gcalEventCreated } : {}),
   });
 }

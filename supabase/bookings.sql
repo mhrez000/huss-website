@@ -30,7 +30,10 @@ create table if not exists public.bookings (
   bathrooms text not null,
   property_size text not null,
   services text[] not null default '{}',
-  notes text
+  notes text,
+  -- Google Calendar event id, set best-effort after insert when the gcal
+  -- integration is enabled. Existing installs: run add-google-calendar.sql.
+  google_event_id text
 );
 
 -- THE atomic guard: no two active bookings may overlap in time.

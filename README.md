@@ -50,11 +50,21 @@ slot is reserved atomically so double-booking is impossible.
   returns 409 and the UI refreshes availability.
 - **Storage** (`src/lib/bookings-store.ts`), selected by env:
   - `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` set → Supabase
-    Postgres. Run `supabase/bookings.sql` once in the SQL editor; a
-    partial unique index on `slot_start` guarantees no double-booking.
-    Cancelling: set a row's `status` to `cancelled` (frees the slot).
+    Postgres. Run `supabase/bookings.sql` once in the SQL editor; the
+    `bookings_no_overlap` gist EXCLUSION constraint on
+    `tstzrange(slot_start, slot_end)` guarantees no double-booking
+    (slots overlap by design, so a unique index on `slot_start` alone
+    would not be enough). Cancelling: set a row's `status` to
+    `cancelled` (frees the slot).
   - Otherwise → local `.data/bookings.json` (dev only; serverless
     filesystems are ephemeral).
+- **Google Calendar sync** (optional): set `GOOGLE_SERVICE_ACCOUNT_JSON`
+  and `GOOGLE_CALENDAR_ID` together and the diary becomes two-way —
+  confirmed bookings land in the photographer's Google Calendar, and
+  his own calendar events block bookable slots on the site. With either
+  var missing the integration is a strict no-op and the site behaves
+  exactly as before. Owner walkthrough:
+  [GOOGLE-CALENDAR-SETUP.md](./GOOGLE-CALENDAR-SETUP.md).
 - **Static demo** (GitHub Pages, `NEXT_PUBLIC_DEMO=1`): no API exists,
   so the picker computes a deterministic pseudo-random diary client-side
   and submissions simulate success with a "demo preview" note.

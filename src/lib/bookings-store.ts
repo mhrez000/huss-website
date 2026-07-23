@@ -45,6 +45,13 @@ export interface BookingStore {
   getBusyBetween(fromIso: string, toIso: string): Promise<BusyInterval[]>;
   /** Insert a booking; must fail with "conflict" if the slot is taken. */
   createBooking(b: NewBooking): Promise<CreateResult>;
+  /**
+   * Best-effort: record the Google Calendar event id created for a
+   * booking (so a future cancellation flow can delete the event).
+   * Optional to stay backward compatible with existing drivers;
+   * implementations swallow failures and log only — never throw.
+   */
+  setGoogleEventId?(id: string, eventId: string): Promise<void>;
 }
 
 /* ---------- Supabase driver (REST, service-role key) ---------- */
@@ -111,12 +118,36 @@ function supabaseStore(url: string, key: string): BookingStore {
       const rows = (await res.json()) as { id: string }[];
       return { ok: true, id: rows[0]?.id ?? "unknown" };
     },
+
+    async setGoogleEventId(id, eventId) {
+      // Best effort only: the calendar event id is a convenience for a
+      // future cancellation flow, never worth failing a booking over.
+      try {
+        const res = await fetch(`${rest}?id=eq.${encodeURIComponent(id)}`, {
+          method: "PATCH",
+          headers: supabaseHeaders(key),
+          body: JSON.stringify({ google_event_id: eventId }),
+        });
+        if (!res.ok) {
+          console.error(
+            `[store] failed to save google_event_id for booking ${id}: ${res.status} ${(await res.text()).slice(0, 300)}`
+          );
+        }
+      } catch (e) {
+        console.error(`[store] failed to save google_event_id for booking ${id}:`, e);
+      }
+    },
   };
 }
 
 /* ---------- local JSON file driver (dev) ---------- */
 
-type FileBooking = NewBooking & { id: string; createdAt: string; status: string };
+type FileBooking = NewBooking & {
+  id: string;
+  createdAt: string;
+  status: string;
+  googleEventId?: string;
+};
 
 const DATA_FILE = path.join(process.cwd(), ".data", "bookings.json");
 
@@ -155,37 +186,76 @@ function fileStore(): BookingStore {
     },
 
     async createBooking(b) {
-      const all = await readFileBookings();
-      const clash = all.some(
-        (x) =>
-          x.status !== "cancelled" &&
-          Date.parse(x.slotStart) < Date.parse(b.slotEnd) &&
-          Date.parse(b.slotStart) < Date.parse(x.slotEnd)
-      );
-      if (clash) return { ok: false, reason: "conflict" };
-      const booking: FileBooking = {
-        ...b,
-        id: `bk_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`,
-        createdAt: new Date().toISOString(),
-        status: "confirmed",
-      };
-      try {
-        await fs.mkdir(path.dirname(DATA_FILE), { recursive: true });
-        // Atomic-ish write: full content to a temp file, then rename over
-        // the target, so a crash mid-write can't leave a truncated file.
-        const tmpFile = `${DATA_FILE}.tmp`;
-        await fs.writeFile(tmpFile, JSON.stringify([...all, booking], null, 2), "utf8");
-        await fs.rename(tmpFile, DATA_FILE);
-        return { ok: true, id: booking.id };
-      } catch (e) {
-        return {
-          ok: false,
-          reason: "error",
-          message: e instanceof Error ? e.message : "file write failed",
+      // Serialized: the read-modify-write must not interleave with any
+      // other mutation, or a concurrent write's booking could be erased.
+      return withFileWriteLock(async () => {
+        const all = await readFileBookings();
+        const clash = all.some(
+          (x) =>
+            x.status !== "cancelled" &&
+            Date.parse(x.slotStart) < Date.parse(b.slotEnd) &&
+            Date.parse(b.slotStart) < Date.parse(x.slotEnd)
+        );
+        if (clash) return { ok: false as const, reason: "conflict" as const };
+        const booking: FileBooking = {
+          ...b,
+          id: `bk_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`,
+          createdAt: new Date().toISOString(),
+          status: "confirmed",
         };
+        try {
+          await fs.mkdir(path.dirname(DATA_FILE), { recursive: true });
+          await writeFileAtomic([...all, booking]);
+          return { ok: true as const, id: booking.id };
+        } catch (e) {
+          return {
+            ok: false as const,
+            reason: "error" as const,
+            message: e instanceof Error ? e.message : "file write failed",
+          };
+        }
+      });
+    },
+
+    async setGoogleEventId(id, eventId) {
+      // Best effort only — log and swallow, never throw. Serialized through
+      // the same lock as createBooking so it can never clobber a booking
+      // that lands mid read-modify-write.
+      try {
+        await withFileWriteLock(async () => {
+          const all = await readFileBookings();
+          const next = all.map((b) =>
+            b.id === id ? { ...b, googleEventId: eventId } : b
+          );
+          await writeFileAtomic(next);
+        });
+      } catch (e) {
+        console.error(`[store] failed to save googleEventId for booking ${id}:`, e);
       }
     },
   };
+}
+
+/**
+ * All file-store mutations run one at a time through this promise chain
+ * (a simple async mutex — sufficient for the single-process dev server
+ * this driver targets).
+ */
+let fileWriteLock: Promise<unknown> = Promise.resolve();
+
+function withFileWriteLock<T>(fn: () => Promise<T>): Promise<T> {
+  const run = fileWriteLock.then(fn, fn);
+  // The chain itself must never reject, or every later write would fail.
+  fileWriteLock = run.catch(() => {});
+  return run;
+}
+
+/** Write via a UNIQUE temp file + rename, so concurrent processes (or a
+ *  crash mid-write) can never truncate or cross-contaminate the target. */
+async function writeFileAtomic(bookings: FileBooking[]): Promise<void> {
+  const tmpFile = `${DATA_FILE}.${process.pid}.${Math.random().toString(36).slice(2, 8)}.tmp`;
+  await fs.writeFile(tmpFile, JSON.stringify(bookings, null, 2), "utf8");
+  await fs.rename(tmpFile, DATA_FILE);
 }
 
 /* ---------- driver selection ---------- */

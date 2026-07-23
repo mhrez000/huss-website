@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { availabilityRange, horizonEnd } from "@/lib/availability";
 import type { BusyInterval } from "@/lib/availability";
 import { getBookingStore } from "@/lib/bookings-store";
+import { getGcalBusy } from "@/lib/google-calendar";
 import {
   addDays,
   clampDate,
@@ -13,14 +14,17 @@ import {
    GET /api/availability?from=YYYY-MM-DD&to=YYYY-MM-DD
    -----------------------------------------------------------
    The photographer's live diary: engine rules minus persisted
-   bookings. Defaults to the full bookable window [today,
-   horizon]. Never cached — the whole point is freshness.
+   bookings minus his own Google Calendar events (when the gcal
+   integration is configured — a no-op otherwise). Defaults to
+   the full bookable window [today, horizon]. Never cached —
+   the whole point is freshness.
 
    Responses:
    - 200 { days: DayAvailability[] }
-   - 200 { days: DayAvailability[], degraded: true }  — store
-     outage; rule-only availability so the page stays alive
-     (POST /api/book still guards conflicts atomically)
+   - 200 { days: DayAvailability[], degraded: true }  — a busy
+     source (store or Google Calendar) failed; slots from the
+     remaining sources so the page stays alive (POST /api/book
+     still guards conflicts atomically)
    - 400 { error: string }                            — bad dates
    =========================================================== */
 
@@ -61,29 +65,49 @@ export async function GET(request: Request) {
   const to = clampDate(toRaw, today, max);
 
   const store = getBookingStore();
-  let busy: BusyInterval[];
-  try {
-    // Cover whole Melbourne days: midnight on `from` to midnight after `to`.
-    busy = await store.getBusyBetween(
-      melWallToUtc(from, 0).toISOString(),
-      melWallToUtc(addDays(to, 1), 0).toISOString()
-    );
-  } catch (error) {
-    // A store outage must not take the booking page down. Serve rule-only
-    // availability and flag it; double-booking is still impossible because
-    // POST /api/book rejects conflicts atomically at insert time.
+
+  // Cover whole Melbourne days: midnight on `from` to midnight after `to`.
+  const fromIso = melWallToUtc(from, 0).toISOString();
+  const toIso = melWallToUtc(addDays(to, 1), 0).toISOString();
+
+  // Both busy sources concurrently: persisted bookings + the photographer's
+  // own Google Calendar (resolves [] when the integration is disabled).
+  const [storeBusy, gcalBusy] = await Promise.allSettled([
+    store.getBusyBetween(fromIso, toIso),
+    getGcalBusy(fromIso, toIso),
+  ]);
+
+  // An outage in either source must not take the booking page down. Merge
+  // whatever fulfilled, flag the response as degraded; double-booking is
+  // still impossible because POST /api/book rejects conflicts atomically
+  // at insert time.
+  const busy: BusyInterval[] = [];
+  let degraded = false;
+
+  if (storeBusy.status === "fulfilled") {
+    busy.push(...storeBusy.value);
+  } else {
     console.error(
       "[availability] busy lookup failed — responding degraded:",
-      error
+      storeBusy.reason
     );
-    return NextResponse.json(
-      { days: availabilityRange(from, to, now, []), degraded: true },
-      { headers: NO_STORE }
+    degraded = true;
+  }
+
+  if (gcalBusy.status === "fulfilled") {
+    busy.push(...gcalBusy.value);
+  } else {
+    console.error(
+      "[availability] Google Calendar busy lookup failed — responding degraded:",
+      gcalBusy.reason
     );
+    degraded = true;
   }
 
   return NextResponse.json(
-    { days: availabilityRange(from, to, now, busy) },
+    degraded
+      ? { days: availabilityRange(from, to, now, busy), degraded: true }
+      : { days: availabilityRange(from, to, now, busy) },
     { headers: NO_STORE }
   );
 }
